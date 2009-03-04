@@ -10,7 +10,7 @@ based on the work of Torsten Baldes http://medienfreunde.com, Matt Oakes http://
 
 What it Does
 =================================================================
-Innerfade fades in/out content within a container. The general idea is to create something like a slideshow. 
+Innerfade fades in/out content within a container. The general idea is to create something like a slideshow. This version extends the original with the ability to setup next and previous buttons.
 
 
 Something Like What it'll be expecting
