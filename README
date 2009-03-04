@@ -5,17 +5,22 @@ Author: Wes Baker
 Mail: wes@newcitymedia.com	
 Web: http://www.newcitymedia.com
 
-based on the work of Torsten Baldes http://medienfreunde.com, 
-Matt Oakes http://portfolio.gizone.co.uk/applications/slideshow/
-and Ralf S. Engelschall http://trainofthoughts.org/
+based on the work of Torsten Baldes http://medienfreunde.com, Matt Oakes http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall http://trainofthoughts.org/
 
-What it'll be expecting
+
+What it Does
+=================================================================
+Innerfade fades in/out content within a container. The general idea is to create something like a slideshow. 
+
+
+Something Like What it'll be expecting
 =================================================================
 <ul id="news"> 
     <li>content 1</li>
     <li>content 2</li>
     <li>content 3</li>
 </ul>
+
 
 Usage
 =================================================================
