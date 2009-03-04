@@ -2,13 +2,13 @@
 
 // jquery.innerfade.js
 
-// Datum: 2008-02-14
-// Firma: Medienfreunde Hofmann & Baldes GbR
-// Author: Torsten Baldes
-// Mail: t.baldes@medienfreunde.com
-// Web: http://medienfreunde.com
+// Date: 2009-03-04
+// Author: Wes Baker
+// Mail: wes@newcitymedia.com	
+// Web: http://www.newcitymedia.com
 
-// based on the work of Matt Oakes http://portfolio.gizone.co.uk/applications/slideshow/
+// based on the work of Torsten Baldes http://medienfreunde.com, 
+// Matt Oakes http://portfolio.gizone.co.uk/applications/slideshow/
 // and Ralf S. Engelschall http://trainofthoughts.org/
 
  *
