@@ -29,6 +29,10 @@
  *  }); 
  *
 
+TODO Pull next and previous selectors into intitial declaration
+TODO Pause
+TODO Index
+
 // ========================================================= */
 
 
