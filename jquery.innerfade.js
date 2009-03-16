@@ -20,6 +20,7 @@
  *  
  *  $('#news').innerfade({ 
  *	  animationtype: Type of animation 'fade', 'slide' or 'slideOver' (Default: 'fade'), 
+ *    easing: Type of easing for slideOver. jQuery comes with 'linear' and 'swing', but you can use other plugins (Default: 'linear'),
  *	  speed: Fading-/Sliding-Speed in milliseconds or keywords (slow, normal or fast) (Default: 'normal'), 
  *	  timeout: Time between the fades in milliseconds (Default: '2000'), 
  *	  type: Type of slideshow: 'sequence', 'random' or 'random_start' (Default: 'sequence'), 
@@ -47,6 +48,7 @@ TODO Index
         // Define default settings
 		var settings = {
         	'animationtype':    'fade',
+ 			'easing': 			'linear',
             'speed':            'normal',
             'type':             'sequence',
             'timeout':          2000,
@@ -126,10 +128,10 @@ TODO Index
             $(elements[last]).css({'left': '0px', 'position': 'absolute', 'right': 'auto', 'top': '0px'});
 			$(elements[current]).css({'left': 'auto', 'position': 'absolute', 'right': '-300px', 'top': '0px'}).show();
 
-			$(elements[last]).animate({'left': '-300px'}, settings.speed, "linear", function() {
+			$(elements[last]).animate({'left': '-300px'}, settings.speed, settings.easing, function() {
 				$(this).hide();
 			});
-			$(elements[current]).animate({'right': '0px'} ,settings.speed, "linear", function() {
+			$(elements[current]).animate({'right': '0px'} ,settings.speed, settings.easing, function() {
 				determineNext();
 			});
         } else if (settings.animationtype == 'fade') {
