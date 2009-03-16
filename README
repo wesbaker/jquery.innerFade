@@ -25,7 +25,7 @@ Something Like What it'll be expecting
 Usage
 =================================================================
 $('#news').innerfade({ 
-	animationtype: Type of animation 'fade' or 'slide' (Default: 'fade'), 
+	animationtype: Type of animation 'fade', 'slide' or 'slideOver' (Default: 'fade'), 
 	speed: Fading-/Sliding-Speed in milliseconds or keywords (slow, normal or fast) (Default: 'normal'), 
 	timeout: Time between the fades in milliseconds (Default: '2000'), 
 	type: Type of slideshow: 'sequence', 'random' or 'random_start' (Default: 'sequence'), 
