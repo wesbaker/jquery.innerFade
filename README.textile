@@ -6,12 +6,10 @@ h1. jquery.innerfade.js
 *Web:* http://www.newcitymedia.com
 
 _Based on the work of Torsten Baldes http://medienfreunde.com, Matt Oakes http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall http://trainofthoughts.org/_
-<hr />
 
 h2. What it Does
 
 Innerfade fades in/out content within a container. The general idea is to create something like a slideshow. This version extends the original with the ability to setup next and previous buttons.
-<hr />
 
 h2. Something Like What it'll be expecting
 
@@ -20,7 +18,6 @@ h2. Something Like What it'll be expecting
     <li>content 2</li>
     <li>content 3</li>
 </ul></code></pre>
-<hr />
 
 h2. Usage
 
