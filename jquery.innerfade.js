@@ -20,11 +20,11 @@
  *  
  *  $('#news').innerfade({ 
  *	  animationtype: Type of animation 'fade', 'slide' or 'slideOver' (Default: 'fade'), 
+ *    easing: Type of easing for slideOver. jQuery comes with 'linear' and 'swing', but you can use other plugins (Default: 'linear'),
  *	  speed: Fading-/Sliding-Speed in milliseconds or keywords (slow, normal or fast) (Default: 'normal'), 
  *	  timeout: Time between the fades in milliseconds (Default: '2000'), 
  *	  type: Type of slideshow: 'sequence', 'random' or 'random_start' (Default: 'sequence'), 
- *    containerheight: Height of the containing element in any css-height-value (Default: 'auto'),
- *	  containerwidth: Width of the containing element in pixels, this needs to be set for slideOver (Default: null),
+ * 		containerheight: Height of the containing element in any css-height-value (Default: 'auto'),
  *	  runningclass: CSS-Class which the container get’s applied (Default: 'innerfade'),
  *	  children: optional children selector (Default: null)
  *  }); 
@@ -53,7 +53,6 @@ TODO Index
             'type':             'sequence',
             'timeout':          2000,
             'containerheight':  'auto',
-			'containerwidth': 	null,
             'runningclass':     'innerfade',
             'children':         null
         };
@@ -127,9 +126,9 @@ TODO Index
         } else if (settings.animationtype == 'slideOver') {
 			$(container).css({'position': 'relative', 'overflow': 'hidden'});
             $(elements[last]).css({'left': '0px', 'position': 'absolute', 'right': 'auto', 'top': '0px'});
-			$(elements[current]).css({'left': 'auto', 'position': 'absolute', 'right': '-' + settings.containerwidth, 'top': '0px'}).show();
+			$(elements[current]).css({'left': 'auto', 'position': 'absolute', 'right': '-300px', 'top': '0px'}).show();
 
-			$(elements[last]).animate({'left': '-' + settings.containerwidth}, settings.speed, settings.easing, function() {
+			$(elements[last]).animate({'left': '-300px'}, settings.speed, settings.easing, function() {
 				$(this).hide();
 			});
 			$(elements[current]).animate({'right': '0px'} ,settings.speed, settings.easing, function() {
