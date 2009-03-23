@@ -5,7 +5,7 @@ h1. jquery.innerfade.js
 *Mail:* wes@newcitymedia.com<br />
 *Web:* "http://www.newcitymedia.com":http://www.newcitymedia.com
 
-Based on the work of Torsten Baldes "http://medienfreunde.com":http://medienfreunde.com, Matt Oakes "http://portfolio.gizone.co.uk/applications/slideshow/":http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall "http://trainofthoughts.org/":http://trainofthoughts.org/
+_Based on the work of Torsten Baldes "http://medienfreunde.com":http://medienfreunde.com, Matt Oakes "http://portfolio.gizone.co.uk/applications/slideshow/":http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall "http://trainofthoughts.org/":http://trainofthoughts.org/_
 
 h2. What it Does
 
