@@ -1,42 +1,45 @@
-jquery.innerfade.js
+h1. jquery.innerfade.js
 
-Date: 2009-03-04
-Author: Wes Baker
-Mail: wes@newcitymedia.com	
-Web: http://www.newcitymedia.com
+*Date:* 2009-03-04<br />
+*Author:* Wes Baker<br />
+*Mail:* wes@newcitymedia.com<br />
+*Web:* http://www.newcitymedia.com
 
-based on the work of Torsten Baldes http://medienfreunde.com, Matt Oakes http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall http://trainofthoughts.org/
+_Based on the work of Torsten Baldes http://medienfreunde.com, Matt Oakes http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall http://trainofthoughts.org/_
+<hr />
 
+h2. What it Does
 
-What it Does
-=================================================================
 Innerfade fades in/out content within a container. The general idea is to create something like a slideshow. This version extends the original with the ability to setup next and previous buttons.
+<hr />
 
+h2. Something Like What it'll be expecting
 
-Something Like What it'll be expecting
-=================================================================
-<ul id="news"> 
+<pre><code><ul id="news"> 
     <li>content 1</li>
     <li>content 2</li>
     <li>content 3</li>
-</ul>
+</ul></code></pre>
+<hr />
 
+h2. Usage
 
-Usage
-=================================================================
-$('#news').innerfade({ 
+<pre><code>$('#news').innerfade({ 
 	animationtype: Type of animation 'fade', 'slide' or 'slideOver' (Default: 'fade'), 
 	speed: Fading-/Sliding-Speed in milliseconds or keywords (slow, normal or fast) (Default: 'normal'), 
 	easing: Type of easing for slideOver. jQuery comes with 'linear' and 'swing', but you can use other plugins (Default: 'linear'),
 	timeout: Time between the fades in milliseconds (Default: '2000'), 
 	type: Type of slideshow: 'sequence', 'random' or 'random_start' (Default: 'sequence'), 
 	containerheight: Height of the containing element in any css-height-value (Default: 'auto'),
+	containerwidth: Width of the containing element in pixels, this needs to be set for slideOver (Default: null),
 	runningclass: CSS-Class which the container get’s applied (Default: 'innerfade'),
 	children: optional children selector (Default: null)
-});
+});</code></pre>
 
-$('#news').innerfadeNext('#news #next a');
+
+<pre><code>$('#news').innerfadeNext('#news #next a');</code></pre>
 This function expects a selector that will select the Next anchor link
 
-$('#news').innerfadePrevious('#news #previous a');
+
+<pre><code>$('#news').innerfadePrevious('#news #previous a');</code></pre>
 This function expects a selector that will select the Previous anchor link
