@@ -31,6 +31,7 @@ h2. Usage
 	containerwidth: Width of the containing element in pixels, this needs to be set for slideOver (Default: null),
 	runningclass: CSS-Class which the container get’s applied (Default: 'innerfade'),
 	children: optional children selector (Default: null),
+	cancelLink: Optional cancel link selector (Default: '.cancel'),
 	pauseLink: Optional pause link selector (Default: '.pause'),
 	prevLink: Optional previous link selector (Default: '.prev'),
 	nextLink: Optional next link selector (Default: '.next')
