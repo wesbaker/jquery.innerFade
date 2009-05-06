@@ -25,6 +25,7 @@
             'containerheight':  'auto',
             'runningclass':     'innerfade',
             'children':         null,
+			'cancelLink': 		'.cancel', 
 			'pauseLink':		'.pause',
 			'prevLink': 		'.prev',
 			'nextLink': 		'.next'
@@ -48,6 +49,12 @@
 			// Establish the Next and Previous Handlers
 			$.innerfadeNext(container, settings.nextLink);
 			$.innerfadePrevious(container, settings.prevLink);
+			
+			// Establish Cancel Handler
+			$(cancelLink).unbind().click(function(event) {
+				event.preventDefault();
+				$.innerfadeUnbind(container);
+			});
 	
 			// Set outer container as relative, and use the height that's set and add the running class
             $(container).css('position', 'relative').css('height', settings.containerheight).addClass(settings.runningclass);
