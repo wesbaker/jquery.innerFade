@@ -30,13 +30,19 @@ h2. Usage
 	containerheight: Height of the containing element in any css-height-value (Default: 'auto'),
 	containerwidth: Width of the containing element in pixels, this needs to be set for slideOver (Default: null),
 	runningclass: CSS-Class which the container get’s applied (Default: 'innerfade'),
-	children: optional children selector (Default: null)
+	children: optional children selector (Default: null),
+	pauseLink: Optional pause link selector (Default: '.pause'),
+	prevLink: Optional previous link selector (Default: '.prev'),
+	nextLink: Optional next link selector (Default: '.next')
 });</code></pre>
 
 
+
+*Deprecated*
 <pre><code>$('#news').innerfadeNext('#news #next a');</code></pre>
 This function expects a selector that will select the Next anchor link
 
 
+*Deprecated*
 <pre><code>$('#news').innerfadePrevious('#news #previous a');</code></pre>
 This function expects a selector that will select the Previous anchor link
