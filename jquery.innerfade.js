@@ -3,10 +3,9 @@
 
 // Date: 2009-03-04
 // Author: Wes Baker
-// Mail: wes@newcitymedia.com	
-// Web: http://www.newcitymedia.com
+// Mail: wes@newcityexperience.com	
+// Web: http://www.newcityexperience.com
 // ========================================================= */
-
 
 (function($) {
     $.fn.innerfade = function(options) {
@@ -25,7 +24,10 @@
             'timeout':          2000,
             'containerheight':  'auto',
             'runningclass':     'innerfade',
-            'children':         null
+            'children':         null,
+			'pauseLink':		'.pause',
+			'prevLink': 		'.prev',
+			'nextLink': 		'.next'
         };
 
 		// Combine default and set settings or use default
@@ -43,6 +45,10 @@
 
 		// Start the loop
         if (elements.length > 1) {
+			// Establish the Next and Previous Handlers
+			$.innerfadeNext(container, settings.nextLink);
+			$.innerfadePrevious(container, settings.prevLink);
+	
 			// Set outer container as relative, and use the height that's set and add the running class
             $(container).css('position', 'relative').css('height', settings.containerheight).addClass(settings.runningclass);
 
@@ -51,6 +57,9 @@
                 $(elements[i]).css('z-index', String(elements.length-i)).css('position', 'absolute').hide();
             };
 
+			var current = '';
+			var last = '';
+
 			// Set the timeout on each object
             if (settings.type == "sequence") {
                 $(container).data("innerfadeTimeout", setTimeout(function() {
@@ -58,7 +67,7 @@
                 }, settings.timeout));
                 $(elements[0]).show();
             } else if (settings.type == "random") {
-            	var last = Math.floor ( Math.random () * ( elements.length ) );
+            	last = Math.floor ( Math.random () * ( elements.length ) );
                 $(container).data("innerfadeTimeout", setTimeout(function() {
                     do { 
 						current = Math.floor ( Math.random ( ) * ( elements.length ) );
@@ -68,7 +77,7 @@
                 $(elements[last]).show();
 			} else if ( settings.type == 'random_start' ) {
 				settings.type = 'sequence';
-				var current = Math.floor ( Math.random () * ( elements.length ) );
+				current = Math.floor ( Math.random () * ( elements.length ) );
 				$(container).data("innerfadeTimeout", setTimeout(function(){
 					$.innerfade.next(container, elements, settings, (current + 1) %  elements.length, current);
 				}, settings.timeout));
@@ -76,6 +85,33 @@
 			} else {
 				alert('Innerfade-Type must either be \'sequence\', \'random\' or \'random_start\'');
 			}
+			
+			// Establish the Pause Handler
+			$(settings.pauseLink).unbind().click(function(event) {
+				event.preventDefault();	
+				if ($(container).data('innerfadeTimeout') != ' ') {
+					$.innerfadeUnbind(container);
+				} else {
+					var tag = $(container).children(':first').attr('tagName').toLowerCase();
+					var current = '';
+					var last = '';
+					
+					if (settings.type == 'sequence') {
+						current = $(tag, $(container)).index($(tag+':visible', $(container)));
+						last = ((current + 1) == elements.length) ? 0 : current - 1;
+					} else if (settings.type == "random") {
+						do { 
+							current = Math.floor ( Math.random ( ) * ( elements.length ) );
+						} while (last == current );
+						last = Math.floor ( Math.random () * ( elements.length ) );
+					} else if (settings.type == "random_start") {
+						current = (last + 1) % elements.length;
+						last = Math.floor ( Math.random () * ( elements.length ) );
+					};
+					
+					$.innerfade.next(container, elements, settings, current, last);
+				};				
+			});
 		}
     };
 
@@ -148,6 +184,7 @@
 	
 	$.innerfadeUnbind = function(container) {
 		clearTimeout($(container).data('innerfadeTimeout'));
+		$(container).data('innerfadeTimeout', ' ');
 	};
 	
 	$.fn.innerfadeNext = function(next) {
@@ -179,8 +216,7 @@
 			'next': 			next
 		};
 		
-		$(next).unbind();
-		$(next).one('click', function(event) {
+		$(next).unbind().one('click', function(event) {
 			event.preventDefault();
 			$.innerfadeUnbind(container);
 			$.innerfadeFade(container, elements, settings, nextElementIndex, currentElementIndex);
@@ -216,8 +252,7 @@
 			'previous': 		previous
 		};
 		
-		$(previous).unbind();
-		$(previous).one('click', function(event) {
+		$(previous).unbind().one('click', function(event) {
 			event.preventDefault();
 			$.innerfadeUnbind(container);
 			$.innerfadeFade(container, elements, settings, previousElementIndex, currentElementIndex);
