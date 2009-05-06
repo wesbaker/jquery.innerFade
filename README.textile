@@ -37,12 +37,10 @@ h2. Usage
 });</code></pre>
 
 
+<hr />
 
-*Deprecated*
-<pre><code>$('#news').innerfadeNext('#news #next a');</code></pre>
-This function expects a selector that will select the Next anchor link
+h3. Deprected
 
+<pre><code>$('#news').innerfadeNext('#news #next a');</code></pre>This function expects a selector that will select the Next anchor link
 
-*Deprecated*
-<pre><code>$('#news').innerfadePrevious('#news #previous a');</code></pre>
-This function expects a selector that will select the Previous anchor link
+<pre><code>$('#news').innerfadePrevious('#news #previous a');</code></pre>This function expects a selector that will select the Previous anchor link
