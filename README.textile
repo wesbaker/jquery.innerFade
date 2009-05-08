@@ -40,7 +40,7 @@ h2. Usage
 
 <hr />
 
-h3. Deprected
+h3. Deprecated
 
 <pre><code>$('#news').innerfadeNext('#news #next a');</code></pre>This function expects a selector that will select the Next anchor link
 
