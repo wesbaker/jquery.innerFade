@@ -2,8 +2,8 @@ h1. jquery.innerfade.js
 
 *Date:* 2009-03-04<br />
 *Author:* Wes Baker<br />
-*Mail:* wes@newcitymedia.com<br />
-*Web:* "http://www.newcitymedia.com":http://www.newcitymedia.com
+*Mail:* wes@newcityexperience.com<br />
+*Web:* "http://www.newcityexperience.com":http://www.newcityexperience.com
 
 Based on the work of Torsten Baldes "http://medienfreunde.com":http://medienfreunde.com, Matt Oakes "http://portfolio.gizone.co.uk/applications/slideshow/":http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall "http://trainofthoughts.org/":http://trainofthoughts.org/
 
