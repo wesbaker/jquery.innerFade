@@ -1,15 +1,15 @@
-h1. jquery.innerfade.js
+h1. jquery.innerFade.js
 
 *Date:* 2009-03-04<br />
 *Author:* Wes Baker<br />
-*Mail:* wes@newcityexperience.com<br />
-*Web:* "http://www.newcityexperience.com":http://www.newcityexperience.com
+*Mail:* wes@wesbaker.com<br />
+*Web:* "http://www.wesbaker.com":http://www.wesbaker.com
 
 Based on the work of Torsten Baldes "http://medienfreunde.com":http://medienfreunde.com, Matt Oakes "http://portfolio.gizone.co.uk/applications/slideshow/":http://portfolio.gizone.co.uk/applications/slideshow/ and Ralf S. Engelschall "http://trainofthoughts.org/":http://trainofthoughts.org/
 
 h2. What it Does
 
-Innerfade fades in/out content within a container. The general idea is to create something like a slideshow. This version extends the original with the ability to setup next and previous buttons.
+innerFade fades in/out content within a container. The general idea is to create something like a slideshow. This version extends the original with the ability to setup next and previous buttons.
 
 h2. Something Like What it'll be expecting
 
@@ -21,7 +21,7 @@ h2. Something Like What it'll be expecting
 
 h2. Usage
 
-<pre><code>$('#news').innerfade({ 
+<pre><code>$('#news').innerFade({ 
 	animationtype: Type of animation 'fade', 'slide' or 'slideOver' (Default: 'fade'), 
 	speed: Fading-/Sliding-Speed in milliseconds or keywords (slow, normal or fast) (Default: 'normal'), 
 	easing: Type of easing for slideOver. jQuery comes with 'linear' and 'swing', but you can use other plugins (Default: 'linear'),
@@ -42,6 +42,6 @@ h2. Usage
 
 h3. Deprecated
 
-<pre><code>$('#news').innerfadeNext('#news #next a');</code></pre>This function expects a selector that will select the Next anchor link
+<pre><code>$('#news').innerFadeNext('#news #next a');</code></pre>This function expects a selector that will select the Next anchor link
 
-<pre><code>$('#news').innerfadePrevious('#news #previous a');</code></pre>This function expects a selector that will select the Previous anchor link
+<pre><code>$('#news').innerFadePrevious('#news #previous a');</code></pre>This function expects a selector that will select the Previous anchor link
