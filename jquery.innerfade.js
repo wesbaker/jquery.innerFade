@@ -1,5 +1,5 @@
 /* =========================================================
-// jquery.innerfade.js
+// jquery.innerFade.js
 
 // Date: 2009-03-04
 // Author: Wes Baker
@@ -8,13 +8,13 @@
 // ========================================================= */
 
 (function($) {
-    $.fn.innerfade = function(options) {
+    $.fn.innerFade = function(options) {
         return this.each(function() {   
-            $.innerfade(this, options);
+            $.innerFade(this, options);
         });
     };
 
-    $.innerfade = function(container, options) {
+    $.innerFade = function(container, options) {
         // Define default settings
 		var settings = {
         	'animationtype':    'fade',
@@ -23,7 +23,7 @@
             'type':             'sequence',
             'timeout':          2000,
             'containerheight':  'auto',
-            'runningclass':     'innerfade',
+            'runningclass':     'innerFade',
             'children':         null,
 			'cancelLink': 		'.cancel', 
 			'pauseLink':		'.pause',
@@ -35,8 +35,8 @@
         if (options)
             $.extend(settings, options);
 
-		$(container).data("innerfadeSpeed", settings.speed);
-		$(container).data("innerfadeAnimationType", settings.animationtype);
+		$(container).data("innerFadeSpeed", settings.speed);
+		$(container).data("innerFadeAnimationType", settings.animationtype);
 
 		// If children option is set use that as elements, otherwise use the called jQuery object
         if (settings.children === null)
@@ -47,13 +47,13 @@
 		// Start the loop
         if (elements.length > 1) {
 			// Establish the Next and Previous Handlers
-			$.innerfadeNext(container, settings.nextLink);
-			$.innerfadePrevious(container, settings.prevLink);
+			$.innerFadeNext(container, settings.nextLink);
+			$.innerFadePrevious(container, settings.prevLink);
 			
 			// Establish Cancel Handler
 			$(cancelLink).unbind().click(function(event) {
 				event.preventDefault();
-				$.innerfadeUnbind(container);
+				$.innerFadeUnbind(container);
 			});
 	
 			// Set outer container as relative, and use the height that's set and add the running class
@@ -69,24 +69,24 @@
 
 			// Set the timeout on each object
             if (settings.type == "sequence") {
-                $(container).data("innerfadeTimeout", setTimeout(function() {
-                    $.innerfade.next(container, elements, settings, 1, 0);
+                $(container).data("innerFadeTimeout", setTimeout(function() {
+                    $.innerFade.next(container, elements, settings, 1, 0);
                 }, settings.timeout));
                 $(elements[0]).show();
             } else if (settings.type == "random") {
             	last = Math.floor ( Math.random () * ( elements.length ) );
-                $(container).data("innerfadeTimeout", setTimeout(function() {
+                $(container).data("innerFadeTimeout", setTimeout(function() {
                     do { 
 						current = Math.floor ( Math.random ( ) * ( elements.length ) );
 					} while (last == current );             
-					$.innerfade.next(container, elements, settings, current, last);
+					$.innerFade.next(container, elements, settings, current, last);
                 }, settings.timeout));
                 $(elements[last]).show();
 			} else if ( settings.type == 'random_start' ) {
 				settings.type = 'sequence';
 				current = Math.floor ( Math.random () * ( elements.length ) );
-				$(container).data("innerfadeTimeout", setTimeout(function(){
-					$.innerfade.next(container, elements, settings, (current + 1) %  elements.length, current);
+				$(container).data("innerFadeTimeout", setTimeout(function(){
+					$.innerFade.next(container, elements, settings, (current + 1) %  elements.length, current);
 				}, settings.timeout));
 				$(elements[current]).show();
 			} else {
@@ -96,8 +96,8 @@
 			// Establish the Pause Handler
 			$(settings.pauseLink).unbind().click(function(event) {
 				event.preventDefault();	
-				if ($(container).data('innerfadeTimeout') != ' ') {
-					$.innerfadeUnbind(container);
+				if ($(container).data('innerFadeTimeout') != ' ') {
+					$.innerFadeUnbind(container);
 				} else {
 					var tag = $(container).children(':first').attr('tagName').toLowerCase();
 					var current = '';
@@ -116,22 +116,22 @@
 						last = Math.floor ( Math.random () * ( elements.length ) );
 					};
 					
-					$.innerfade.next(container, elements, settings, current, last);
+					$.innerFade.next(container, elements, settings, current, last);
 				};				
 			});
 		}
     };
 
-	$.innerfadeFade = function(container, elements, settings, current, last) {
+	$.innerFadeFade = function(container, elements, settings, current, last) {
 		var determineNext = function() {
 			if (settings.next) 
-				$.innerfadeNext(container, settings.next);
-			else if ($(container).data("innerfadeNextSelector"))
-				$.innerfadeNext(container, $(container).data("innerfadeNextSelector"));
+				$.innerFadeNext(container, settings.next);
+			else if ($(container).data("innerFadeNextSelector"))
+				$.innerFadeNext(container, $(container).data("innerFadeNextSelector"));
 			if (settings.previous) 
-				$.innerfadePrevious(container, settings.previous);
-			else if ($(container).data("innerfadePreviousSelector"))
-				$.innerfadePrevious(container, $(container).data("innerfadePreviousSelector"));
+				$.innerFadePrevious(container, settings.previous);
+			else if ($(container).data("innerFadePreviousSelector"))
+				$.innerFadePrevious(container, $(container).data("innerFadePreviousSelector"));
 		};
 		
 		if (settings.animationtype == 'slide') {
@@ -159,8 +159,8 @@
 		}
 	};
 
-    $.innerfade.next = function(container, elements, settings, current, last) {
-        $.innerfadeFade(container, elements, settings, current, last);
+    $.innerFade.next = function(container, elements, settings, current, last) {
+        $.innerFadeFade(container, elements, settings, current, last);
 		
         if (settings.type == "sequence") {
             if ((current + 1) < elements.length) {
@@ -178,36 +178,36 @@
             alert('Innerfade-Type must either be \'sequence\', \'random\' or \'random_start\'');
 		}
 		
-        $(container).data("innerfadeTimeout", setTimeout((function() {
-            $.innerfade.next(container, elements, settings, current, last);
+        $(container).data("innerFadeTimeout", setTimeout((function() {
+            $.innerFade.next(container, elements, settings, current, last);
         }), settings.timeout));
     };
 
-	$.fn.innerfadeUnbind = function() {
+	$.fn.innerFadeUnbind = function() {
 		return this.each(function(index) {
-			$.innerfadeUnbind(this);
+			$.innerFadeUnbind(this);
 		});
 	};
 	
-	$.innerfadeUnbind = function(container) {
-		clearTimeout($(container).data('innerfadeTimeout'));
-		$(container).data('innerfadeTimeout', ' ');
+	$.innerFadeUnbind = function(container) {
+		clearTimeout($(container).data('innerFadeTimeout'));
+		$(container).data('innerFadeTimeout', ' ');
 	};
 	
-	$.fn.innerfadeNext = function(next) {
+	$.fn.innerFadeNext = function(next) {
 		return this.each(function(index) {
-			$.innerfadeNext(this, next);
+			$.innerFadeNext(this, next);
 		});
 	};
 	
-	$.innerfadeNext = function(container, next) {
+	$.innerFadeNext = function(container, next) {
 		// Define default settings
-		var nextSelector = '.innerfade-next';
+		var nextSelector = '.innerFade-next';
 
 		// Combine default and set settings or use default
         if (next) nextSelector = next;
 
-		$(container).data('innerfadeNextSelector', nextSelector);
+		$(container).data('innerFadeNextSelector', nextSelector);
 
 		// If children option is set use that as elements, otherwise use the called jQuery object
 		var elements = $(container).children();
@@ -218,32 +218,32 @@
 		var nextElementIndex = $(container).children().index($nextElement);
 		
 		var settings = {
-			'speed': 			$(container).data('innerfadeSpeed'),
-			'animationtype': 	$(container).data('innerfadeAnimationType'),
+			'speed': 			$(container).data('innerFadeSpeed'),
+			'animationtype': 	$(container).data('innerFadeAnimationType'),
 			'next': 			next
 		};
 		
 		$(next).unbind().one('click', function(event) {
 			event.preventDefault();
-			$.innerfadeUnbind(container);
-			$.innerfadeFade(container, elements, settings, nextElementIndex, currentElementIndex);
+			$.innerFadeUnbind(container);
+			$.innerFadeFade(container, elements, settings, nextElementIndex, currentElementIndex);
 		});
 	};
 	
-	$.fn.innerfadePrevious = function(previous) {
+	$.fn.innerFadePrevious = function(previous) {
 		return this.each(function(index) {
-			$.innerfadePrevious(this, previous);
+			$.innerFadePrevious(this, previous);
 		});
 	};
 	
-	$.innerfadePrevious = function(container, previous) {
+	$.innerFadePrevious = function(container, previous) {
 		// Define default settings
-		var previousSelector = '.innerfade-previous';
+		var previousSelector = '.innerFade-previous';
 
 		// Combine default and set settings or use default
         if (previous) previousSelector = previous;
 
-		$(container).data('innerfadePreviousSelector', previousSelector);
+		$(container).data('innerFadePreviousSelector', previousSelector);
 
 		// If children option is set use that as elements, otherwise use the called jQuery object
 		var elements = $(container).children();
@@ -254,15 +254,15 @@
 		var previousElementIndex = $(container).children().index($previousElement);
 		
 		var settings = {
-			'speed': 			$(container).data('innerfadeSpeed'),
-			'animationtype': 	$(container).data('innerfadeAnimationType'),
+			'speed': 			$(container).data('innerFadeSpeed'),
+			'animationtype': 	$(container).data('innerFadeAnimationType'),
 			'previous': 		previous
 		};
 		
 		$(previous).unbind().one('click', function(event) {
 			event.preventDefault();
-			$.innerfadeUnbind(container);
-			$.innerfadeFade(container, elements, settings, previousElementIndex, currentElementIndex);
+			$.innerFadeUnbind(container);
+			$.innerFadeFade(container, elements, settings, previousElementIndex, currentElementIndex);
 		});
 	};
 
