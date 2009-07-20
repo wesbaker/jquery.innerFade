@@ -36,12 +36,3 @@ h2. Usage
 	prevLink: Optional previous link selector (Default: '.prev'),
 	nextLink: Optional next link selector (Default: '.next')
 });</code></pre>
-
-
-<hr />
-
-h3. Deprecated
-
-<pre><code>$('#news').innerFadeNext('#news #next a');</code></pre>This function expects a selector that will select the Next anchor link
-
-<pre><code>$('#news').innerFadePrevious('#news #previous a');</code></pre>This function expects a selector that will select the Previous anchor link
