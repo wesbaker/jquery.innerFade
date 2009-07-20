@@ -14,7 +14,6 @@
         });
     };
 
-	
     $.innerFade = function(container, options) {
         // Define default settings
 		var settings = {
@@ -52,7 +51,7 @@
 			$.innerFadePrevious(container, settings.prevLink);
 			
 			// Establish Cancel Handler
-			$(settings.cancelLink).unbind().click(function(event) {
+			$(cancelLink).unbind().click(function(event) {
 				event.preventDefault();
 				$.innerFadeUnbind(container);
 			});
@@ -124,12 +123,12 @@
     };
 
 	/**
-	 * Fades the slideshow to the item of your choosing
-	 * @param {jQuery Object} container The conatiner holding the items being faded
-	 * @param {Array} elements The list of elements within the container
+	 * Fades the slideshow to the item selected (current) from the previous item (last)
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {Array} elements The array of elements within the container
 	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
-	 * @param {Number} current The position in the array of the item to be shown
-	 * @param {Number} last The position in the array of the item to be hidden
+	 * @param {Number} current The position in the elements array of the item to be shown
+	 * @param {Number} last The position in the elements array of the item to be hidden
 	 */
 	$.innerFadeFade = function(container, elements, settings, current, last) {
 		var determineNext = function() {
@@ -168,6 +167,14 @@
 		}
 	};
 
+	/**
+	 * Fades to the item of your choosing and establishes the next item to fade to
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {Array} elements The array of elements within the container
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 * @param {Number} current The position in the elements array of the item to be shown
+	 * @param {Number} last The position in the elements array of the item to be hidden
+	 */
     $.innerFade.next = function(container, elements, settings, current, last) {
         $.innerFadeFade(container, elements, settings, current, last);
 		
@@ -191,17 +198,8 @@
             $.innerFade.next(container, elements, settings, current, last);
         }), settings.timeout));
     };
-	
-	/**
-	 * Stops the fading completely
-	 * @param {jQuery Object} container The conatiner holding the items being faded
-	 */
-	$.innerFadeUnbind = function(container) {
-		clearTimeout($(container).data('innerFadeTimeout'));
-		$(container).data('innerFadeTimeout', ' ');
-	};
-	
-	/* Allows use of the $.innerFadeUnbind function outside of the plugin */
+
+	/* Allows the unbind function to be called from javascript */
 	$.fn.innerFadeUnbind = function() {
 		return this.each(function(index) {
 			$.innerFadeUnbind(this);
@@ -209,9 +207,18 @@
 	};
 	
 	/**
-	 * Binds the next item link to view the next item
-	 * @param {jQuery Object} container The container holding the items being faded
-	 * @param {String} previous jQuery (CSS) Selector pointing to the next item link
+	 * Stops the slideshow
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 */
+	$.innerFadeUnbind = function(container) {
+		clearTimeout($(container).data('innerFadeTimeout'));
+		$(container).data('innerFadeTimeout', ' ');
+	};
+	
+	/**
+	 * Establishes the Next link behavior
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {String} previous The jQuery (CSS) selector of the next link
 	 */
 	$.innerFadeNext = function(container, next) {
 		// Define default settings
@@ -244,9 +251,9 @@
 	};
 	
 	/**
-	 * Binds the previous item link to view the previous item
-	 * @param {jQuery Object} container The container holding the items being faded
-	 * @param {String} previous jQuery (CSS) Selector pointing to the previous item link
+	 * Establishes the Previous link behavior
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {String} previous The jQuery (CSS) selector of the previous link
 	 */
 	$.innerFadePrevious = function(container, previous) {
 		// Define default settings
