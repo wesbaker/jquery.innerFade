@@ -8,12 +8,6 @@
 // ========================================================= */
 
 (function($) {
-	var configuration = {
-		settings: {},
-		elements: [],
-		container: {}
-	};
-	
     $.fn.innerFade = function(options) {
         return this.each(function() {   
             $.innerFade(this, options);
@@ -50,7 +44,7 @@
 			
 			// Establish Cancel Handler
 			$.innerFadeCancel(container, settings);
-			
+
 			// Set outer container as relative, and use the height that's set and add the running class
             $(container).css({'position': 'relative', 'height': settings.containerheight}).addClass(settings.runningclass);
 			// 'overflow': 'hidden',
