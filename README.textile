@@ -34,5 +34,6 @@ h2. Usage
 	cancelLink: Optional cancel link selector (Default: '.cancel'),
 	pauseLink: Optional pause link selector (Default: '.pause'),
 	prevLink: Optional previous link selector (Default: '.prev'),
-	nextLink: Optional next link selector (Default: '.next')
+	nextLink: Optional next link selector (Default: '.next'),
+	indexContainer: Optional index container selector, indexes are direct links to individual slides (Default: null)
 });</code></pre>

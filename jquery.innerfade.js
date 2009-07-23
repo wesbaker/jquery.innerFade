@@ -28,7 +28,8 @@
 			'cancelLink':		'.cancel', 
 			'pauseLink':		'.pause',
 			'prevLink':			'.prev',
-			'nextLink':			'.next'
+			'nextLink':			'.next',
+			'indexContainer': 	null,
 		};
 
 		// Combine default and set settings or use default
@@ -47,6 +48,11 @@
 
 			// Set outer container as relative, and use the height that's set and add the running class
 			$(container).css({'position': 'relative', 'height': settings.containerheight}).addClass(settings.runningclass);
+			
+			// Build the Index if one is specified
+			if (settings.indexContainer) {				
+				$.innerFadeIndex(container, settings, elements);
+			};
 
 			// Set the z-index from highest to lowest (20, 19, 18...) and set their position as absolute
 			for (var i = 0; i < elements.length; i++) {
@@ -242,4 +248,29 @@
 		});
 	};
 
+	/**
+	 * Creates one link for each item in the slideshow, to show that item immediately
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {Array} elements The array of elements within the container
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 */
+	$.innerFadeIndex = function(container, settings, elements) {
+		var $indexContainer = $(settings.indexContainer);
+		
+		var buildLink = function(count) {
+			var	$link = $('<li><a href="#">' + (count + 1) + '</a></li>');
+			$link.click(function(event) {
+				event.preventDefault();
+				var $currentVisibleItem = $('> :visible', $(container));
+				var currentItemIndex = $(elements).index($currentVisibleItem);
+				$.innerFadeUnbind(container);
+				$.innerFadeFade(container, elements, settings, count, currentItemIndex);
+			});
+			return $link;
+		};
+				
+		for (var i=0; i < elements.length; i++) {
+			$indexContainer.append(buildLink(i));
+		};
+	};
 })(jQuery);
