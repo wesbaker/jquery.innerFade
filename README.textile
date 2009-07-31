@@ -11,6 +11,8 @@ h2. What it Does
 
 innerFade fades in/out content within a container. The general idea is to create something like a slideshow. This version extends the original with the ability to setup next and previous buttons.
 
+When using the indexContainer selector, the currently visible index will have a class of 'active'.
+
 h2. Something Like What it'll be expecting
 
 <pre><code><ul id="news"> 

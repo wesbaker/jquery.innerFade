@@ -29,7 +29,7 @@
 			'pauseLink':		'.pause',
 			'prevLink':			'.prev',
 			'nextLink':			'.next',
-			'indexContainer': 	null,
+			'indexContainer': 	null
 		};
 
 		// Combine default and set settings or use default
@@ -51,7 +51,7 @@
 			
 			// Build the Index if one is specified
 			if (settings.indexContainer) {				
-				$.innerFadeIndex(container, settings, elements);
+				$.innerFadeIndex(container, elements, settings);
 			};
 
 			// Set the z-index from highest to lowest (20, 19, 18...) and set their position as absolute
@@ -62,25 +62,23 @@
 			var current = '';
 			var last = '';
 
-			// Set the timeout on each object
 			if (settings.type == "random") {
 				last = Math.floor(Math.random() * elements.length);
 				do { 
 					current = Math.floor(Math.random() * elements.length);
 				} while (last == current );				
-				$.innerFade.next(container, elements, settings, current, last);
 				
+				$.innerFade.next(container, elements, settings, current, last);
 				$(elements[last]).show();
 			} else if ( settings.type == 'random_start' ) {
 				settings.type = 'sequence';
 				current = Math.floor ( Math.random () * ( elements.length ) );
-				$.innerFade.next(container, elements, settings, (current + 1) %	 elements.length, current);
 				
+				$.innerFade.next(container, elements, settings, (current + 1) %	 elements.length, current);
 				$(elements[current]).show();
 			} else {
 				// Otherwise and if its sequence
-				$.innerFade.next(container, elements, settings, 1, 0);
-				
+				$.innerFade.next(container, elements, settings, 0, elements.length - 1);
 				$(elements[0]).show();
 			}
 			
@@ -125,6 +123,10 @@
 				buildControls();
 			});
 		}
+		
+		if (settings.indexContainer) {
+			$.updateIndexes(container, elements, settings, current);
+		};
 	};
 
 	/**
@@ -136,20 +138,17 @@
 	 * @param {Number} last The position in the elements array of the item to be hidden
 	 */
 	$.innerFade.next = function(container, elements, settings, current, last) {
+		$.innerFadeFade(container, elements, settings, current, last);		
+
+		// Get ready for next fade
 		if (settings.type == "random") {
 			last = current;
 			while (current == last) { current = Math.floor(Math.random() * elements.length); }
 		} else {
-			if ((current + 1) < elements.length) {
-				current = current + 1;
-				last = current - 1;
-			} else {
-				current = 0;
-				last = elements.length - 1;
-			}
+			last = (last > current) ? 0 : current;
+			current = (current + 1 >= elements.length) ? 0 : current + 1;
 		}
 		
-				$.innerFadeFade(container, elements, settings, current, last);
 		$(container).data("innerFadeTimeout", setTimeout((function() {
 			$.innerFade.next(container, elements, settings, current, last);
 		}), settings.timeout));
@@ -249,12 +248,24 @@
 	};
 
 	/**
+	 * Updates the indexes and adds an active class to the visible item
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {Array} elements The array of elements within the container
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 * @param {Number} current The position in the elements array of the item to be shown
+	 */
+	$.updateIndexes = function(container, elements, settings, current) {
+		$(settings.indexContainer).children().removeClass('active');
+		$('> :eq(' + current + ')', $(settings.indexContainer)).addClass('active');
+	};
+	
+	/**
 	 * Creates one link for each item in the slideshow, to show that item immediately
 	 * @param {jQuery Object} container The container that first calls the innerfade plugin
 	 * @param {Array} elements The array of elements within the container
 	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.innerFadeIndex = function(container, settings, elements) {
+	$.innerFadeIndex = function(container, elements, settings) {
 		var $indexContainer = $(settings.indexContainer);
 		
 		var buildLink = function(count) {
