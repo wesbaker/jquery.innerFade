@@ -37,5 +37,7 @@ h2. Usage
 	pauseLink: Optional pause link selector (Default: '.pause'),
 	prevLink: Optional previous link selector (Default: '.prev'),
 	nextLink: Optional next link selector (Default: '.next'),
-	indexContainer: Optional index container selector, indexes are direct links to individual slides (Default: null)
+	indexContainer: Optional index container selector, indexes are direct links to individual slides (Default: null),
+	currentItemContainer: Optional container for the current item number (Default: null),
+	totalItemsContainer: Optional container for the total item number (Default: null)
 });</code></pre>

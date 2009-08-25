@@ -17,19 +17,21 @@
 	$.innerFade = function(container, options) {
 		// Define default settings
 		var settings = {
-			'animationtype':	'fade',
-			'easing':			'linear',
-			'speed':			'normal',
-			'type':				'sequence',
-			'timeout':			2000,
-			'containerheight':	'auto',
-			'runningclass':		'innerFade',
-			'children':			null,
-			'cancelLink':		'.cancel', 
-			'pauseLink':		'.pause',
-			'prevLink':			'.prev',
-			'nextLink':			'.next',
-			'indexContainer': 	null
+			'animationtype':			'fade',
+			'easing':					'linear',
+			'speed':					'normal',
+			'type':						'sequence',
+			'timeout':					2000,
+			'containerheight':			'auto',
+			'runningclass':				'innerFade',
+			'children':					null,
+			'cancelLink':				'.cancel', 
+			'pauseLink':				'.pause',
+			'prevLink':					'.prev',
+			'nextLink':					'.next',
+			'indexContainer': 			null,
+			'currentItemContainer': 	null,
+			'totalItemsContainer': 		null
 		};
 
 		// Combine default and set settings or use default
@@ -78,9 +80,16 @@
 				$(elements[current]).show();
 			} else {
 				// Otherwise and if its sequence
-				$.innerFade.next(container, elements, settings, 0, elements.length - 1);
+				current = 0;
+				last = elements.length - 1;
+				
+				$.innerFade.next(container, elements, settings, current, last);
 				$(elements[0]).show();
 			}
+			
+			// Set item count containers
+			if (settings.currentItemContainer) {$.currentItem(current, settings)};
+			if (settings.totalItemsContainer) {$.totalItems(elements, settings)};
 			
 			// Establish the Pause Handler
 			$.innerFadePause(container, elements, settings);
@@ -119,11 +128,12 @@
 		} else {
 			$(elements[last]).fadeOut(settings.speed);
 			$(elements[current]).fadeIn(settings.speed, function() {
-				// $(elements[current]).css('filter', '');
 				buildControls();
 			});
 		}
-		
+		if (settings.currentItemContainer) {
+			$.currentItem(current, settings);
+		};
 		if (settings.indexContainer) {
 			$.updateIndexes(container, elements, settings, current);
 		};
@@ -275,7 +285,9 @@
 				var $currentVisibleItem = $('> :visible', $(container));
 				var currentItemIndex = $(elements).index($currentVisibleItem);
 				$.innerFadeUnbind(container);
-				$.innerFadeFade(container, elements, settings, count, currentItemIndex);
+				if ($('> :visible', $(container)).size() <= 1) {
+					$.innerFadeFade(container, elements, settings, count, currentItemIndex);
+				};
 			});
 			return $link;
 		};
@@ -283,5 +295,25 @@
 		for (var i=0; i < elements.length; i++) {
 			$indexContainer.append(buildLink(i));
 		};
+	};
+	
+	/**
+	 * Changes the text of the current item selector to the index of the current item
+	 * @param {Number} current The index of the current item (0 indexed)
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 */
+	$.currentItem = function(current, settings) {
+		var $container = $(settings.currentItemContainer);
+		$container.text(current + 1);
+	};
+	
+	/**
+	 * Changes the text of the total item selector to the total number of items
+	 * @param {Array} elements The array of elements within the container
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 */
+	$.totalItems = function(elements, settings) {
+		var $container = $(settings.totalItemsContainer);
+		$container.text(elements.length);
 	};
 })(jQuery);
