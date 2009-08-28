@@ -88,8 +88,8 @@
 			}
 			
 			// Set item count containers
-			if (settings.currentItemContainer) {$.currentItem(current, settings)};
-			if (settings.totalItemsContainer) {$.totalItems(elements, settings)};
+			if (settings.currentItemContainer) {$.currentItem(current, settings);};
+			if (settings.totalItemsContainer) {$.totalItems(elements, settings);};
 			
 			// Establish the Pause Handler
 			$.innerFadePause(container, elements, settings);
@@ -270,7 +270,64 @@
 	};
 	
 	/**
+	 * Creates handlers for the links created by the $.handleIndexes and $.generateIndexes functions
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {Array} elements The array of elements within the container
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 * @param {Number} count The item to be setting the link on
+	 * @param {jQuery Object} link The selector or jQuery object of the link
+	 */
+	$.handleLink = function(container, elements, settings, count, link) {
+		$(link).click(function(event) {
+			event.preventDefault();
+			var $currentVisibleItem = $('> :visible', $(container));
+			var currentItemIndex = $(elements).index($currentVisibleItem);
+			$.innerFadeUnbind(container);
+			if ($('> :visible', $(container)).size() <= 1) {
+				$.innerFadeFade(container, elements, settings, count, currentItemIndex);
+			};
+		});
+	};
+	
+	/**
 	 * Creates one link for each item in the slideshow, to show that item immediately
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {Array} elements The array of elements within the container
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 */
+	$.generateIndexes = function(container, elements, settings) {
+		var $indexContainer = $(settings.indexContainer);
+		
+		for (var i=0; i < elements.length; i++) {
+			var	$link = $('<li><a href="#">' + (i + 1) + '</a></li>');
+			$.handleLink(container, elements, settings, i, link);
+			return $link;
+		};
+	};
+	
+	/**
+	 * Establishes links between the slide elements and index items in the indexContainer
+	 * @param {jQuery Object} container The container that first calls the innerfade plugin
+	 * @param {Array} elements The array of elements within the container
+	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 */
+	$.handleIndexes = function(container, elements, settings) {
+		var $indexContainer = $(settings.indexContainer);
+		var $indexContainerChildren = $('> :visible', $indexContainer);
+		
+		if ($indexContainerChildren.size() == elements.length) {
+			var count = elements.length;
+			for (var i=0; i < count; i++) {
+				$('a', $indexContainer).click(function(event) {event.preventDefault();});
+				$.handleLink(container, elements, settings, i, $indexContainerChildren[i]);
+			};
+		} else {
+			alert("There is a different number of items in the menu and slides. There needs to be the same number in both.\nThere are " + $indexContainerChildren.size() + " in the indexContainer.\nThere are " + elements.length + " in the slides container.");
+		};		
+	};
+	
+	/**
+	 * Determines if its empty or not. If its empty then it generates links, if its not empty it links one to one
 	 * @param {jQuery Object} container The container that first calls the innerfade plugin
 	 * @param {Array} elements The array of elements within the container
 	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
@@ -278,22 +335,10 @@
 	$.innerFadeIndex = function(container, elements, settings) {
 		var $indexContainer = $(settings.indexContainer);
 		
-		var buildLink = function(count) {
-			var	$link = $('<li><a href="#">' + (count + 1) + '</a></li>');
-			$link.click(function(event) {
-				event.preventDefault();
-				var $currentVisibleItem = $('> :visible', $(container));
-				var currentItemIndex = $(elements).index($currentVisibleItem);
-				$.innerFadeUnbind(container);
-				if ($('> :visible', $(container)).size() <= 1) {
-					$.innerFadeFade(container, elements, settings, count, currentItemIndex);
-				};
-			});
-			return $link;
-		};
-				
-		for (var i=0; i < elements.length; i++) {
-			$indexContainer.append(buildLink(i));
+		if ($indexContainer.html().length <= 0) {
+			$.generateIndexes(container, elements, settings);
+		} else {
+			$.handleIndexes(container, elements, settings);
 		};
 	};
 	
