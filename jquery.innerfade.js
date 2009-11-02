@@ -8,6 +8,10 @@
 // ========================================================= */
 
 (function($) {
+	var container, elements, settings;
+	var currentTimeout = null;
+	var count = 0;
+	
 	$.fn.innerFade = function(options) {
 		return this.each(function() {	
 			$.innerFade(this, options);
@@ -16,16 +20,17 @@
 
 	$.innerFade = function(container, options) {
 		// Define default settings
-		var settings = {
-			'animationtype':			'fade',
+		var defaultSettings = {
+			'animationType':			'fade',
 			'easing':					'linear',
 			'speed':					'normal',
 			'type':						'sequence',
 			'timeout':					2000,
-			'containerheight':			'auto',
-			'runningclass':				'innerFade',
+			'loop': 					true,
+			'containerHeight':			'auto',
+			'runningClass':				'innerFade',
 			'children':					null,
-			'cancelLink':				'.cancel', 
+			'cancelLink':				null, 
 			'pauseLink':				'.pause',
 			'prevLink':					'.prev',
 			'nextLink':					'.next',
@@ -33,141 +38,156 @@
 			'currentItemContainer': 	null,
 			'totalItemsContainer': 		null
 		};
-
+		
+		
 		// Combine default and set settings or use default
-		if (options) { $.extend(settings, options); }
+		if (options) { settings = $.extend(defaultSettings, options); }
 
 		// If children option is set use that as elements, otherwise use the called jQuery object
-		var elements = (settings.children === null) ? $(container).children() : $(container).children(settings.children);
-
+		elements = (settings.children === null) ? $(container).children() : $(container).children(settings.children);
+		
+		container = container;
+		
 		// Start the loop
 		if (elements.length > 1) {
 			// Establish the Next and Previous Handlers
-			$.innerFadeControls(container, elements, settings);
+			$.bindControls();
 			
 			// Establish Cancel Handler
-			$.innerFadeCancel(container, settings);
+			if (settings.cancelLink) { $.bindCancel(); };
 
 			// Set outer container as relative, and use the height that's set and add the running class
-			$(container).css({'position': 'relative', 'height': settings.containerheight}).addClass(settings.runningclass);
+			$(container).css({'position': 'relative', 'height': settings.containerHeight}).addClass(settings.runningClass);
 			
 			// Build the Index if one is specified
 			if (settings.indexContainer) {				
-				$.innerFadeIndex(container, elements, settings);
+				$.innerFadeIndex();
 			};
 
+			$(elements).filter(':gt(0)').hide(0);
 			// Set the z-index from highest to lowest (20, 19, 18...) and set their position as absolute
 			for (var i = 0; i < elements.length; i++) {
-				$(elements[i]).css('z-index', String(elements.length-i)).css('position', 'absolute').hide();
+				$(elements[i]).css('z-index', String(elements.length-i)).css('position', 'absolute');
 			}
 
-			var current = '';
-			var last = '';
+			var toShow = '';
+			var toHide = '';
 
 			if (settings.type == "random") {
-				last = Math.floor(Math.random() * elements.length);
+				toHide = Math.floor(Math.random() * elements.length);
 				do { 
-					current = Math.floor(Math.random() * elements.length);
-				} while (last == current );				
+					toShow = Math.floor(Math.random() * elements.length);
+				} while (toHide == toShow );				
 				
-				$.innerFade.next(container, elements, settings, current, last);
-				$(elements[last]).show();
+				$.fadeTimeout(toShow, toHide, true);
+				$(elements[toHide]).show();
 			} else if ( settings.type == 'random_start' ) {
 				settings.type = 'sequence';
-				current = Math.floor ( Math.random () * ( elements.length ) );
+				toShow = Math.floor ( Math.random () * ( elements.length ) );
 				
-				$.innerFade.next(container, elements, settings, (current + 1) %	 elements.length, current);
-				$(elements[current]).show();
+				$.fadeTimeout((toShow + 1) % elements.length, toShow, true);
+				$(elements[toShow]).show();
 			} else {
 				// Otherwise and if its sequence
-				current = 0;
-				last = elements.length - 1;
+				toShow = 0;
+				toHide = elements.length - 1;
 				
-				$.innerFade.next(container, elements, settings, current, last);
+				$.fadeTimeout(toShow, toHide, true);
 				$(elements[0]).show();
 			}
 			
 			// Set item count containers
-			if (settings.currentItemContainer) {$.currentItem(current, settings);};
-			if (settings.totalItemsContainer) {$.totalItems(elements, settings);};
+			if (settings.currentItemContainer) { $.currentItem(toShow); };
+			if (settings.totalItemsContainer) { $.totalItems(); };
 			
 			// Establish the Pause Handler
-			$.innerFadePause(container, elements, settings);
+			$.bindPause();
 		}
 	};
 
 
 	/**
-	 * Fades the slideshow to the item selected (current) from the previous item (last)
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
-	 * @param {Number} current The position in the elements array of the item to be shown
-	 * @param {Number} last The position in the elements array of the item to be hidden
+	 * Fades the slideshow to the item selected from the previous item
+	 * @param {Number} toShow The position in the elements array of the item to be shown
+	 * @param {Number} toHide The position in the elements array of the item to be hidden
 	 */
-	$.innerFadeFade = function(container, elements, settings, current, last) {
+	$.fadeToItem = function(toShow, toHide) {
+		// Update the next and previous controls
 		var buildControls = function() {
-			if (settings.nextLink || settings.prevLink) { $.innerFadeControls(container, elements, settings); }
+			if (settings.nextLink || settings.prevLink) { $.bindControls(); }
 		};
 		
-		if (settings.animationtype == 'slide') {
-			$(elements[last]).slideUp(settings.speed);
-			$(elements[current]).slideDown(settings.speed, function() {buildPreviousNext();});
-		} else if (settings.animationtype == 'slideOver') {
+		if (settings.animationType == 'slide') {
+			$(elements[toHide]).slideUp(settings.speed);
+			$(elements[toShow]).slideDown(settings.speed, function() {buildPreviousNext();});
+		} else if (settings.animationType == 'slideOver') {
 			var itemWidth = $(elements[0]).width();
 			$(container).css({'overflow': 'hidden'});
-			$(elements[last]).css({'left': '0px', 'position': 'absolute', 'right': 'auto', 'top': '0px'});
-			$(elements[current]).css({'left': 'auto', 'position': 'absolute', 'right': '-'+itemWidth+'px', 'top': '0px'}).show();
+			$(elements[toHide]).css({'left': '0px', 'position': 'absolute', 'right': 'auto', 'top': '0px'});
+			$(elements[toShow]).css({'left': 'auto', 'position': 'absolute', 'right': '-'+itemWidth+'px', 'top': '0px'}).show();
 
-			$(elements[last]).animate({'left': '-'+itemWidth+'px'}, settings.speed, settings.easing, function() {
+			$(elements[toHide]).animate({'left': '-'+itemWidth+'px'}, settings.speed, settings.easing, function() {
 				$(this).hide();
 			});
-			$(elements[current]).animate({'right': '0px'} ,settings.speed, settings.easing, function() {
+			$(elements[toShow]).animate({'right': '0px'} ,settings.speed, settings.easing, function() {
 				buildControls();
 			});
 		} else {
-			$(elements[last]).fadeOut(settings.speed);
-			$(elements[current]).fadeIn(settings.speed, function() {
+			$(elements[toHide]).fadeOut(settings.speed);
+			$(elements[toShow]).fadeIn(settings.speed, function() {
 				buildControls();
 			});
 		}
+		// Update the toShow item
 		if (settings.currentItemContainer) {
-			$.currentItem(current, settings);
+			$.currentItem(toShow);
 		};
+		
+		// Update indexes with active classes
 		if (settings.indexContainer) {
-			$.updateIndexes(container, elements, settings, current);
+			$.updateIndexes(toShow);
 		};
 	};
 
 	/**
 	 * Fades to the item of your choosing and establishes the timeout for the next item to fade to
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
-	 * @param {Number} current The position in the elements array of the item to be shown
-	 * @param {Number} last The position in the elements array of the item to be hidden
+	 * @param {Number} toShow The position in the elements array of the item to be shown
+	 * @param {Number} toHide The position in the elements array of the item to be hidden
+	 * @param {Boolean} firstRun If this is the first run of innerfade, pass true, otherwise pass false
 	 */
-	$.innerFade.next = function(container, elements, settings, current, last) {
-		$.innerFadeFade(container, elements, settings, current, last);		
+	$.fadeTimeout = function(toShow, toHide, firstRun) {
+		// If its not the first run, then fade
+		if (firstRun != true) {
+			$.fadeToItem(toShow, toHide);
+		};
+		
+		// Increment the count of slides shown
+		count++;
+		
+		// Check if loop is false, if it is check to see how many slides have been shown.
+		// In the case that you're at the last slide, stop the slideshow and return.
+		if (settings.loop == false && count >= elements.length) {
+			$.stopSlideshow();
+			return;
+		};
 
 		// Get ready for next fade
 		if (settings.type == "random") {
-			last = current;
-			while (current == last) { current = Math.floor(Math.random() * elements.length); }
+			toHide = toShow;
+			while (toShow == toHide) { toShow = Math.floor(Math.random() * elements.length); }
 		} else {
-			last = (last > current) ? 0 : current;
-			current = (current + 1 >= elements.length) ? 0 : current + 1;
+			toHide = (toHide > toShow) ? 0 : toShow;
+			toShow = (toShow + 1 >= elements.length) ? 0 : toShow + 1;
 		}
 		
-		$(container).data("innerFadeTimeout", setTimeout((function() {
-			$.innerFade.next(container, elements, settings, current, last);
-		}), settings.timeout));
+		// Set the time out
+		currentTimeout = setTimeout((function() { $.fadeTimeout(toShow, toHide, false); }), settings.timeout);
 	};
 
 	/* Allows the unbind function to be called from javascript */
 	$.fn.innerFadeUnbind = function() {
 		return this.each(function(index) {
-			$.innerFadeUnbind(this);
+			$.stopSlideshow();
 		});
 	};
 	
@@ -175,9 +195,9 @@
 	 * Stops the slideshow
 	 * @param {jQuery Object} container The container that first calls the innerfade plugin
 	 */
-	$.innerFadeUnbind = function(container) {
-		clearTimeout($(container).data('innerFadeTimeout'));
-		$(container).data('innerFadeTimeout', ' ');
+	$.stopSlideshow = function() {
+		clearTimeout(currentTimeout);
+		currentTimeout = null;
 	};
 	
 	/**
@@ -186,29 +206,32 @@
 	 * @param {Array} elements The elements within the container
 	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.innerFadeControls = function(container, elements, settings) {
-		var previousSelector = (settings.prevLink) ? settings.prevLink : '.innerFade-previous';
-		var nextSelector = (settings.nextLink) ? settings.nextLink : '.innerFade-next';
-		
-		var $currentElement = $('> :visible', $(container));
-		var currentElementIndex = $(container).children().index($currentElement);
-		
-		var $nextElement = ($currentElement.next().length > 0) ? $currentElement.next() : $(container).children(':first');
-		var nextElementIndex = $(container).children().index($nextElement);
-		
-		var $previousElement = ($currentElement.prev().length > 0) ? $currentElement.prev() : $(container).children(':last');
-		var previousElementIndex = $(container).children().index($previousElement);
-		
-		var bindClick = function(selector, nextItem) {
-			$(selector).unbind().one('click', function(event) {
-				event.preventDefault();
-				$.innerFadeUnbind(container);
-				$.innerFadeFade(container, elements, settings, nextItem, currentElementIndex);
-			});
-		};
+	$.bindControls = function() {
+		$(settings.nextLink).unbind().one('click', function(event) {
+			event.preventDefault();
+			$.stopSlideshow();
+			
+			var $currentElement = $(elements).filter(':visible');
+			var currentElementIndex = $(elements).index($currentElement);
 
-		bindClick(previousSelector, previousElementIndex);
-		bindClick(nextSelector, nextElementIndex);
+			var $nextElement = ($currentElement.next().length > 0) ? $currentElement.next() : $(elements).filter(':first');
+			var nextElementIndex = $(elements).index($nextElement);
+			
+			$.fadeToItem(nextElementIndex, currentElementIndex);
+		});
+			
+		$(settings.prevLink).unbind().one('click', function(event) {
+			event.preventDefault();
+			$.stopSlideshow();
+			
+			var $currentElement = $(elements).filter(':visible');
+			var currentElementIndex = $(elements).index($currentElement);
+
+			var $previousElement = ($currentElement.prev().length > 0) ? $currentElement.prev() : $(elements).filter(':last');
+			var previousElementIndex = $(elements).index($previousElement);
+			
+			$.fadeToItem(previousElementIndex, currentElementIndex);
+		});
 	};
 	
 	/**
@@ -217,11 +240,11 @@
 	 * @param {Array} elements The array of elements within the container
 	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.innerFadePause = function(container, elements, settings) {
+	$.bindPause = function() {
 		$(settings.pauseLink).unbind().click(function(event) {
 			event.preventDefault(); 
-			if ($(container).data('innerFadeTimeout') != ' ') {
-				$.innerFadeUnbind(container);
+			if (currentTimeout != null) {
+				$.stopSlideshow();
 			} else {
 				var tag = $(container).children(':first').attr('tagName').toLowerCase();
 				var nextItem = '';
@@ -240,78 +263,64 @@
 					nextItem = ((previousItem + 1) == elements.length) ? 0 : previousItem + 1;
 				}
 				
-				$.innerFade.next(container, elements, settings, nextItem, previousItem);
+				$.fadeTimeout(nextItem, previousItem, false);
 			}
 		});
 	};
 		
 	/**
 	 * Establishes the Cancel Button
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.innerFadeCancel = function(container, settings) {
+	$.bindCancel = function() {
 		$(settings.cancelLink).unbind().click(function(event) {
 			event.preventDefault();
-			$.innerFadeUnbind(container);
+			$.stopSlideshow();
 		});
 	};
 
 	/**
 	 * Updates the indexes and adds an active class to the visible item
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
-	 * @param {Number} current The position in the elements array of the item to be shown
+	 * @param {Number} toShow The position in the elements array of the item to be shown
 	 */
-	$.updateIndexes = function(container, elements, settings, current) {
+	$.updateIndexes = function(toShow) {
 		$(settings.indexContainer).children().removeClass('active');
-		$('> :eq(' + current + ')', $(settings.indexContainer)).addClass('active');
+		$('> :eq(' + toShow + ')', $(settings.indexContainer)).addClass('active');
 	};
 	
 	/**
 	 * Creates handlers for the links created by the $.handleIndexes and $.generateIndexes functions
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 * @param {Number} count The item to be setting the link on
 	 * @param {jQuery Object} link The selector or jQuery object of the link
 	 */
-	$.handleLink = function(container, elements, settings, count, link) {
+	$.createIndexHandler = function(count, link) {
 		$(link).click(function(event) {
 			event.preventDefault();
-			var $currentVisibleItem = $('> :visible', $(container));
+			var $currentVisibleItem = $(elements).filter(':visible');
 			var currentItemIndex = $(elements).index($currentVisibleItem);
-			$.innerFadeUnbind(container);
-			if ($('> :visible', $(container)).size() <= 1) {
-				$.innerFadeFade(container, elements, settings, count, currentItemIndex);
+			$.stopSlideshow();
+			if ($currentVisibleItem.size() <= 1) {
+				$.fadeToItem(count, currentItemIndex);
 			};
 		});
 	};
 	
 	/**
 	 * Creates one link for each item in the slideshow, to show that item immediately
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.generateIndexes = function(container, elements, settings) {
+	$.createIndexes = function() {
 		var $indexContainer = $(settings.indexContainer);
 		
 		for (var i=0; i < elements.length; i++) {
 			var	$link = $('<li><a href="#">' + (i + 1) + '</a></li>');
-			$.handleLink(container, elements, settings, i, link);
+			$.createIndexHandler(i, link);
 			return $link;
 		};
 	};
 	
 	/**
 	 * Establishes links between the slide elements and index items in the indexContainer
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.handleIndexes = function(container, elements, settings) {
+	$.linkIndexes = function() {
 		var $indexContainer = $(settings.indexContainer);
 		var $indexContainerChildren = $('> :visible', $indexContainer);
 		
@@ -319,7 +328,7 @@
 			var count = elements.length;
 			for (var i=0; i < count; i++) {
 				$('a', $indexContainer).click(function(event) {event.preventDefault();});
-				$.handleLink(container, elements, settings, i, $indexContainerChildren[i]);
+				$.createIndexHandler(i, $indexContainerChildren[i]);
 			};
 		} else {
 			alert("There is a different number of items in the menu and slides. There needs to be the same number in both.\nThere are " + $indexContainerChildren.size() + " in the indexContainer.\nThere are " + elements.length + " in the slides container.");
@@ -327,37 +336,30 @@
 	};
 	
 	/**
-	 * Determines if its empty or not. If its empty then it generates links, if its not empty it links one to one
-	 * @param {jQuery Object} container The container that first calls the innerfade plugin
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
+	 * Determines if the index container is empty or not. If its empty then it generates links, if its not empty it links one to one
 	 */
-	$.innerFadeIndex = function(container, elements, settings) {
+	$.innerFadeIndex = function() {
 		var $indexContainer = $(settings.indexContainer);
 		
 		if ($indexContainer.html().length <= 0) {
-			$.generateIndexes(container, elements, settings);
+			$.createIndexes();
 		} else {
-			$.handleIndexes(container, elements, settings);
+			$.linkIndexes();
 		};
 	};
 	
 	/**
 	 * Changes the text of the current item selector to the index of the current item
-	 * @param {Number} current The index of the current item (0 indexed)
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.currentItem = function(current, settings) {
+	$.currentItem = function(current) {
 		var $container = $(settings.currentItemContainer);
 		$container.text(current + 1);
 	};
 	
 	/**
 	 * Changes the text of the total item selector to the total number of items
-	 * @param {Array} elements The array of elements within the container
-	 * @param {Object} settings The settings object which contains speed, style, selectors of the items and so on
 	 */
-	$.totalItems = function(elements, settings) {
+	$.totalItems = function() {
 		var $container = $(settings.totalItemsContainer);
 		$container.text(elements.length);
 	};
