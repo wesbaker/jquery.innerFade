@@ -20,7 +20,7 @@
 
 	$.innerFade = function(container, options) {
 		// Define default settings
-		var defaultSettings = {
+		settings = {
 			'animationType':			'fade',
 			'easing':					'linear',
 			'speed':					'normal',
@@ -41,7 +41,7 @@
 		
 		
 		// Combine default and set settings or use default
-		if (options) { settings = $.extend(defaultSettings, options); }
+		if (options) { settings = $.extend(settings, options); }
 
 		// If children option is set use that as elements, otherwise use the called jQuery object
 		elements = (settings.children === null) ? $(container).children() : $(container).children(settings.children);
@@ -57,7 +57,13 @@
 			if (settings.cancelLink) { $.bindCancel(); };
 
 			// Set outer container as relative, and use the height that's set and add the running class
-			$(container).css({'position': 'relative', 'height': settings.containerHeight}).addClass(settings.runningClass);
+			$(container).css({'position': 'relative'}).addClass(settings.runningClass);
+			if (settings.containerHeight == 'auto') {
+				height = $(elements).filter(':first').height();
+				$(container).css({'height': height + 'px'});
+			} else {
+				$(container).css({'height': settings.containerHeight});
+			};
 			
 			// Build the Index if one is specified
 			if (settings.indexContainer) {				
