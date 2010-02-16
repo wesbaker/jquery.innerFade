@@ -1,6 +1,6 @@
 h1. jquery.innerFade.js
 
-*Date:* 2009-07-21<br />
+*Date:* 2010-02-16<br />
 *Author:* Wes Baker<br />
 *Mail:* wes@wesbaker.com<br />
 *Web:* "http://www.wesbaker.com":http://www.wesbaker.com
@@ -28,6 +28,7 @@ h2. Usage
 	speed: Fading-/Sliding-Speed in milliseconds or keywords (slow, normal or fast) (Default: 'normal'), 
 	easing: Type of easing for slideOver. jQuery comes with 'linear' and 'swing', but you can use other plugins (Default: 'linear'),
 	timeout: Time between the fades in milliseconds (Default: '2000'), 
+	startDelay: Time before the first slide change (Default: '0'),
 	loop: Whether to keep looping after the slideshow has gone through once (Default: true),
 	type: Type of slideshow: 'sequence', 'random' or 'random_start' (Default: 'sequence'), 
 	containerHeight: Height of the containing element in any css-height-value (Default: 'auto'),

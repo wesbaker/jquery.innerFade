@@ -1,7 +1,7 @@
 /* =========================================================
 // jquery.innerFade.js
 
-// Date: 2009-07-21
+// Date: 2010-02-16
 // Author: Wes Baker
 // Mail: wes@wesbaker.com	
 // Web: http://www.wesbaker.com
@@ -26,7 +26,8 @@
 			'speed':					'normal',
 			'type':						'sequence',
 			'timeout':					2000,
-			'loop': 					true,
+			'startDelay': 				0,
+ 			'loop': 					true,
 			'containerHeight':			'auto',
 			'runningClass':				'innerFade',
 			'children':					null,
@@ -85,22 +86,25 @@
 					toShow = Math.floor(Math.random() * elements.length);
 				} while (toHide == toShow );				
 				
-				$.fadeTimeout(toShow, toHide, true);
+				
 				$(elements[toHide]).show();
 			} else if ( settings.type == 'random_start' ) {
 				settings.type = 'sequence';
-				toShow = Math.floor ( Math.random () * ( elements.length ) );
-				
-				$.fadeTimeout((toShow + 1) % elements.length, toShow, true);
-				$(elements[toShow]).show();
+				toHide = Math.floor ( Math.random () * ( elements.length ) );
+				toShow = (toHide + 1) % elements.length;
 			} else {
 				// Otherwise and if its sequence
 				toShow = 0;
 				toHide = elements.length - 1;
-				
-				$.fadeTimeout(toShow, toHide, true);
-				$(elements[0]).show();
 			}
+			
+			$.fadeTimeout(toShow, toHide, true);
+			
+			if (settings.type == 'random') {
+				$(elements[toHide]).show();
+			} else {
+				$(elements[toShow]).show();
+			};
 			
 			// Set item count containers
 			if (settings.currentItemContainer) { $.currentItem(toShow); };
@@ -186,8 +190,9 @@
 			toShow = (toShow + 1 >= elements.length) ? 0 : toShow + 1;
 		}
 		
-		// Set the time out
-		currentTimeout = setTimeout((function() { $.fadeTimeout(toShow, toHide, false); }), settings.timeout);
+		// Set the time out; if its first run and a start delay exists, use the start delay
+		var timeout = (firstRun && settings.startDelay) ? settings.startDelay : settings.timeout;
+		currentTimeout = setTimeout((function() { $.fadeTimeout(toShow, toHide, false); }), timeout);
 	};
 
 	/* Allows the unbind function to be called from javascript */
@@ -315,11 +320,10 @@
 	 */
 	$.createIndexes = function() {
 		var $indexContainer = $(settings.indexContainer);
-		
 		for (var i=0; i < elements.length; i++) {
 			var	$link = $('<li><a href="#">' + (i + 1) + '</a></li>');
-			$.createIndexHandler(i, link);
-			return $link;
+			$.createIndexHandler(i, $link);
+			$indexContainer.append($link);
 		};
 	};
 	
@@ -346,8 +350,7 @@
 	 */
 	$.innerFadeIndex = function() {
 		var $indexContainer = $(settings.indexContainer);
-		
-		if ($indexContainer.html().length <= 0) {
+		if ($(':visible', $indexContainer).size() <= 0) {
 			$.createIndexes();
 		} else {
 			$.linkIndexes();
