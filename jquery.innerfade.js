@@ -85,8 +85,6 @@
 				do { 
 					toShow = Math.floor(Math.random() * elements.length);
 				} while (toHide == toShow );				
-				
-				
 				$(elements[toHide]).show();
 			} else if ( settings.type == 'random_start' ) {
 				settings.type = 'sequence';
@@ -99,6 +97,7 @@
 			}
 			
 			$.fadeTimeout(toShow, toHide, true);
+			$.updateIndexes(toShow);
 			
 			if (settings.type == 'random') {
 				$(elements[toHide]).show();
