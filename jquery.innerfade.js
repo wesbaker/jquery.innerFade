@@ -22,6 +22,7 @@
 		// Define default settings
 		settings = {
 			'animationType':			'fade',
+			'animate': 					true,
 			'easing':					'linear',
 			'speed':					'normal',
 			'type':						'sequence',
@@ -96,7 +97,9 @@
 				toHide = elements.length - 1;
 			}
 			
-			$.fadeTimeout(toShow, toHide, true);
+			if (settings.animate) {
+				$.fadeTimeout(toShow, toHide, true);
+			};
 			$.updateIndexes(toShow);
 			
 			if (settings.type == 'random') {
