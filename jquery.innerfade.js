@@ -311,7 +311,7 @@
 			var $currentVisibleItem = $(elements).filter(':visible');
 			var currentItemIndex = $(elements).index($currentVisibleItem);
 			$.stopSlideshow();
-			if ($currentVisibleItem.size() <= 1) {
+			if ($currentVisibleItem.size() <= 1 && count != currentItemIndex) {
 				$.fadeToItem(count, currentItemIndex);
 			};
 		});
