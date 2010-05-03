@@ -296,8 +296,20 @@
 	 * @param {Number} toShow The position in the elements array of the item to be shown
 	 */
 	$.updateIndexes = function(toShow) {
+		var to_show_override = null;
+		
 		$(settings.indexContainer).children().removeClass('active');
-		$('> :eq(' + toShow + ')', $(settings.indexContainer)).addClass('active');
+		if (settings.indexMenu) {			
+			$.each(settings.indexMenu, function(index, val) {
+				for (var i=0; i < val.length; i++) {
+					if (toShow == val[i]) {
+						$('> :eq(' + index + ')', $(settings.indexContainer)).addClass('active');
+					};
+				};
+			});
+		} else {
+			$('> :eq(' + toShow + ')', $(settings.indexContainer)).addClass('active');
+		};
 	};
 	
 	/**
@@ -314,6 +326,8 @@
 			if ($currentVisibleItem.size() <= 1) {
 				$.fadeToItem(count, currentItemIndex);
 			};
+			
+			$.updateIndexes(count);
 		});
 	};
 	
@@ -335,13 +349,18 @@
 	$.linkIndexes = function() {
 		var $indexContainer = $(settings.indexContainer);
 		var $indexContainerChildren = $('> :visible', $indexContainer);
+		$('a', $indexContainer).click(function(event) {event.preventDefault();});
 		
 		if ($indexContainerChildren.size() == elements.length) {
 			var count = elements.length;
 			for (var i=0; i < count; i++) {
-				$('a', $indexContainer).click(function(event) {event.preventDefault();});
 				$.createIndexHandler(i, $indexContainerChildren[i]);
 			};
+		} else if (settings.indexMenu) {
+			$.each(settings.indexMenu, function(index, val) {
+				$.createIndexHandler(val[0], $indexContainerChildren[index]);
+			});
+			$.createIndexHandler();
 		} else {
 			alert("There is a different number of items in the menu and slides. There needs to be the same number in both.\nThere are " + $indexContainerChildren.size() + " in the indexContainer.\nThere are " + elements.length + " in the slides container.");
 		};		
