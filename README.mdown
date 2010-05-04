@@ -58,4 +58,4 @@ Usage
 
 	$('#news').innerFadeTo(slide_number);
 
-InnerFadeTo allows you to change to a specific slide. `slide_number` is a zero indexed slide number. For example, if you wanted to change to the second slide, you would use `$('#news').innerFadeTo(2)`
+InnerFadeTo allows you to change to a specific slide. `slide_number` is a zero indexed slide number. For example, if you wanted to change to the second slide, you would use `$('#news').innerFadeTo(1)`
