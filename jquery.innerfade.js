@@ -116,7 +116,21 @@
 			$.bindPause();
 		}
 	};
-
+	
+	/**
+	 * Public function to change to a specific slide. This is expecting a zero-index slide number.
+	 * @param {Number} slide_number Zero-indexed slide number
+	 */
+	$.fn.innerFadeTo = function(slide_number) {
+		return this.each(function(index) {
+			var $currentVisibleItem = $(elements).filter(':visible');
+			var currentItemIndex = $(elements).index($currentVisibleItem);
+			$.stopSlideshow();
+			if (slide_number != currentItemIndex) {
+				$.fadeToItem(slide_number, currentItemIndex);
+			};
+		});
+	};
 
 	/**
 	 * Fades the slideshow to the item selected from the previous item
