@@ -1,7 +1,7 @@
 jquery.innerFade.js
 ===================
 
-**Date:** 2010-02-16<br />
+**Date:** 2010-05-21<br />
 **Author:** Wes Baker<br />
 **Mail:** wes@wesbaker.com<br />
 **Web:** [http://wesbaker.com](http://wesbaker.com/)
@@ -43,10 +43,10 @@ Usage
 		runningClass: CSS Class which the container get’s applied (Default: 'innerfade'),
 		children: optional children selector (Default: null),
 	
-		cancelLink: Optional cancel link selector (Default: '.cancel'),
-		pauseLink: Optional pause link selector (Default: '.pause'),
-		prevLink: Optional previous link selector (Default: '.prev'),
-		nextLink: Optional next link selector (Default: '.next'),
+		cancelLink: Optional cancel link selector (Default: null),
+		pauseLink: Optional pause link selector (Default: null),
+		prevLink: Optional previous link selector (Default: null),
+		nextLink: Optional next link selector (Default: null),
 	
 		indexContainer: Optional index container selector, indexes are direct links to individual slides (Default: null),
 	
