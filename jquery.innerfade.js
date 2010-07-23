@@ -1,7 +1,7 @@
 /* =========================================================
 // jquery.innerFade.js
 
-// Date: 2010-05-21
+// Date: 2010-07-23
 // Author: Wes Baker
 // Mail: wes@wesbaker.com	
 // Web: http://www.wesbaker.com
@@ -11,6 +11,7 @@
 	var default_options = {
 		'animationType':			'fade',
 		'animate': 					true,
+		'first_slide': 				0,
 		'easing':					'linear',
 		'speed':					'normal',
 		'type':						'sequence',
@@ -26,7 +27,8 @@
 		'nextLink':					null,
 		'indexContainer': 			null,
 		'currentItemContainer': 	null,
-		'totalItemsContainer': 		null
+		'totalItemsContainer': 		null,
+		'callback_index_update': 	null
 	};
 	
 	$.fn.innerFade = function(options) {
@@ -89,12 +91,16 @@
 					toShow = (toHide + 1) % $fade_object.elements.length;
 				} else {
 					// Otherwise and if its sequence
-					toShow = 0;
-					toHide = $fade_object.elements.length - 1;
+					toShow = $fade_object.settings.first_slide;
+					toHide = ($fade_object.settings.first_slide == 0) ? $fade_object.elements.length - 1 : $fade_object.settings.first_slide - 1;
 				}
 
 				if ($fade_object.settings.animate) {
 					$.fadeTimeout($fade_object, toShow, toHide, true);
+				} else {
+					$($fade_object.elements[toShow]).show();
+					$($fade_object.elements[toHide]).hide();
+					$.updateIndexes($fade_object, toShow);
 				};
 				$.updateIndexes($fade_object, toShow);
 
@@ -315,6 +321,11 @@
 	$.updateIndexes = function($fade_object, toShow) {
 		$($fade_object.settings.indexContainer).children().removeClass('active');
 		$('> :eq(' + toShow + ')', $($fade_object.settings.indexContainer)).addClass('active');
+		
+		// Check for the callback index update
+		if (typeof($fade_object.settings.callback_index_update) == "function") {
+			$fade_object.settings.callback_index_update.call(this, toShow);
+		};
 	};
 	
 	/**
@@ -341,6 +352,7 @@
 	 */
 	$.createIndexes = function($fade_object) {
 		var $indexContainer = $($fade_object.settings.indexContainer);
+		
 		for (var i=0; i < $fade_object.elements.length; i++) {
 			var	$link = $('<li><a href="#">' + (i + 1) + '</a></li>');
 			$.createIndexHandler($fade_object, i, $link);

@@ -1,7 +1,7 @@
 jquery.innerFade.js
 ===================
 
-**Date:** 2010-05-21<br />
+**Date:** 2010-07-23<br />
 **Author:** Wes Baker<br />
 **Mail:** wes@wesbaker.com<br />
 **Web:** [http://wesbaker.com](http://wesbaker.com/)
@@ -32,6 +32,7 @@ Usage
 	$('#news').innerFade({ 
 		animationType: Type of animation 'fade', 'slide' or 'slideOver' (Default: 'fade'), 
 		animate: Whether to animate the slideshow or not (Default: true),
+		first_slide: The first slide that should be shown (Default: 0),
 		speed: Fading-/Sliding-Speed in milliseconds or keywords (slow, normal or fast) (Default: 'normal'), 
 		easing: Type of easing for slideOver. jQuery comes with 'linear' and 'swing', but you can use other plugins (Default: 'linear'),
 		timeout: Time between the fades in milliseconds (Default: '2000'), 
@@ -51,7 +52,9 @@ Usage
 		indexContainer: Optional index container selector, indexes are direct links to individual slides (Default: null),
 	
 		currentItemContainer: Optional container for the current item number (Default: null),
-		totalItemsContainer: Optional container for the total item number (Default: null)
+		totalItemsContainer: Optional container for the total item number (Default: null),
+		
+		callback_index_update: Optional callback that's fired after the indexes are updated. The first parameter of the function call is the index of the slide to show (Default: null)
 	});
 
 ### InnerFadeTo
