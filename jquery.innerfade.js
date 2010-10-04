@@ -178,7 +178,7 @@
 		};
 		
 		// Update indexes with active classes
-		if ($fade_object.settings.indexContainer) {
+		if ($fade_object.settings.indexContainer || $fade_object.settings.callback_index_update) {
 			$.updateIndexes($fade_object, toShow);
 		};
 	};
