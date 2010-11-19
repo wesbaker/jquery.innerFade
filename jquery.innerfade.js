@@ -155,15 +155,58 @@
 			$($fade_object.elements[toHide]).slideUp($fade_object.settings.speed);
 			$($fade_object.elements[toShow]).slideDown($fade_object.settings.speed, function() {buildControls();});
 		} else if ($fade_object.settings.animationType == 'slideOver') {
-			var itemWidth = $($fade_object.elements[0]).width();
+			var itemWidth = $($fade_object.elements[0]).width(),
+				to_hide_css = {},
+				to_show_css = {},
+				to_hide_animation = {},
+				to_show_animation = {};
+				
 			$($fade_object.container).css({'overflow': 'hidden'});
-			$($fade_object.elements[toHide]).css({'left': '0px', 'position': 'absolute', 'right': 'auto', 'top': '0px'});
-			$($fade_object.elements[toShow]).css({'left': 'auto', 'position': 'absolute', 'right': '-'+itemWidth+'px', 'top': '0px'}).show();
+			
+			// Both CSS Declarations use the same initial CSS
+			to_hide_css = {
+				'position': 'absolute',
+				'top': '0px'
+			};
+			
+			to_show_css = $.extend({}, to_hide_css);
+			
+			// If going forward, we want the item (to be shown) to animate from the right to left
+			// If going backwards, we want the item (to be shown) to animate from the left to the right
+			if (toShow > toHide) { // Forwards
+				console.log('Forwards!');
+				to_hide_css.left = "0px";
+				to_hide_css.right = "auto";
 
-			$($fade_object.elements[toHide]).animate({'left': '-'+itemWidth+'px'}, $fade_object.settings.speed, $fade_object.settings.easing, function() {
+				to_show_css.left = 'auto';
+				to_show_css.right = '-' + itemWidth + 'px';
+
+				to_hide_animation.left = '-' + itemWidth + 'px';
+
+				to_show_animation.right = '0px';
+				
+				console.log(to_hide_css);
+			} else { // Backwards
+				console.log("Backwards!");
+				to_hide_css.left = "auto";
+				to_hide_css.right = "0px";
+
+				to_show_css.left = '-' + itemWidth + 'px';
+				to_show_css.right = 'auto';
+
+				to_hide_animation.right = '-' + itemWidth + 'px';
+
+				to_show_animation.left = '0px';
+			};
+			
+			$($fade_object.elements[toHide]).css(to_hide_css);
+			$($fade_object.elements[toShow]).css(to_show_css).show();
+
+			$($fade_object.elements[toHide]).animate(to_hide_animation, $fade_object.settings.speed, $fade_object.settings.easing, function() {
 				$(this).hide();
 			});
-			$($fade_object.elements[toShow]).animate({'right': '0px'} ,$fade_object.settings.speed, $fade_object.settings.easing, function() {
+			
+			$($fade_object.elements[toShow]).animate(to_show_animation ,$fade_object.settings.speed, $fade_object.settings.easing, function() {
 				buildControls();
 			});
 		} else {

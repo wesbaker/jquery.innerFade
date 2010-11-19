@@ -1,7 +1,7 @@
 jquery.innerFade.js
 ===================
 
-**Date:** 2010-07-23<br />
+**Date:** 2010-11-19<br />
 **Author:** Wes Baker<br />
 **Mail:** wes@wesbaker.com<br />
 **Web:** [http://wesbaker.com](http://wesbaker.com/)
