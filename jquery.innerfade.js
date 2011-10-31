@@ -31,6 +31,12 @@
 		'callback_index_update': 	null
 	};
 	
+	$(function() {
+	    window.isActive = true;
+	    $(window).focus(function() { this.isActive = true; });
+	    $(window).blur(function() { this.isActive = false; });
+	});	
+	
 	$.fn.innerFade = function(options) {
 		return this.each(function() {
 			$fade_object = new Object();
@@ -234,29 +240,34 @@
 	 * @param {Boolean} firstRun If this is the first run of innerfade, pass true, otherwise pass false
 	 */
 	$.fadeTimeout = function($fade_object, toShow, toHide, firstRun) {
-		// If its not the first run, then fade
-		if (firstRun != true) {
-			$.fadeToItem($fade_object, toShow, toHide);
-		};
 		
-		// Increment the count of slides shown
-		$fade_object.count++;
+		// only process if window is active, otherwise just call the same function
+		if (window.isActive) {
+			// If its not the first run, then fade
+			if (firstRun != true) {
+				$.fadeToItem($fade_object, toShow, toHide);
+			};
 		
-		// Check if loop is false, if it is check to see how many slides have been shown.
-		// In the case that you're at the last slide, stop the slideshow and return.
-		if ($fade_object.settings.loop == false && $fade_object.count >= $fade_object.elements.length) {
-			$.stopSlideshow($fade_object);
-			return;
-		};
+			// Increment the count of slides shown
+			$fade_object.count++;
+		
+			// 	Check if loop is false, if it is check to see how many slides have been shown.
+			// In the case that you're at the last slide, stop the slideshow and return.
+			if ($fade_object.settings.loop == false && $fade_object.count >= $fade_object.elements.length) {
+				$.stopSlideshow($fade_object);
+				return;
+			};
 
-		// Get ready for next fade
-		if ($fade_object.settings.type == "random") {
-			toHide = toShow;
-			while (toShow == toHide) { toShow = Math.floor(Math.random() * $fade_object.elements.length); }
-		} else {
-			toHide = (toHide > toShow) ? 0 : toShow;
-			toShow = (toShow + 1 >= $fade_object.elements.length) ? 0 : toShow + 1;
-		}
+			// Get ready for next fade
+			if ($fade_object.settings.type == "random") {
+				toHide = toShow;
+				while (toShow == toHide) { toShow = Math.floor(Math.random() * $fade_object.elements.length); }
+			} else {
+				toHide = (toHide > toShow) ? 0 : toShow;
+				toShow = (toShow + 1 >= $fade_object.elements.length) ? 0 : toShow + 1;
+			}
+			
+		};
 		
 		// Set the time out; if its first run and a start delay exists, use the start delay
 		var timeout = (firstRun && $fade_object.settings.startDelay) ? $fade_object.settings.startDelay : $fade_object.settings.timeout;
