@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>example</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="jquery.innerfade.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function() {
+			$('#show').innerFade({
+				indexContainer: '#index',
+				currentItemContainer: '.current',
+				totalItemsContainer: '.total',
+				timeout: 2000,
+				pauseLink: '.pause',
+				prevLink: '.prev',
+				nextLink: '.next'
+			});	
+			
+			$('#show2').innerFade({
+				animate: false,
+				indexContainer: '#index2'
+			});
+		});
+	</script>
+	<style>
+	#show li,
+	#show2 li {
+		border: 1px solid red;
+		height: 300px;
+		width: 500px;
+		list-style: none;
+	}
+	</style>
+</head>
+
+<body>
+	<ul id="show">
+		<li><h1>First Slide</h1></li>
+		<li><h1>Second Slide</h1></li>
+	</ul>
+	<ul id="show-nav">
+		<li><a class="prev" href="#">Previous</a></li>
+		<li><a class="pause" href="#">Pause</a></li>
+		<li><a class="next" href="#">Next</a></li>
+	</ul>
+	<ul id="index"></ul> <!-- #index -->
+	Current: <span class="current"></span>
+	Total: <span class="total"></span>
+	
+	<hr />
+	<ul id="show2">
+		<li><h1>First Slide</h1></li>
+		<li><h1>Second Slide</h1></li>
+	</ul>
+	<ul id="index2"></ul> <!-- #index2 -->
+</body>
+</html>
