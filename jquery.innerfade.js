@@ -156,71 +156,87 @@
 		var buildControls = function() {
 			if ($fade_object.settings.nextLink || $fade_object.settings.prevLink) { $.bindControls($fade_object); }
 		};
+		var speed = $fade_object.settings.speed;
 		
-		if ($fade_object.settings.animationType == 'slide') {
-			$($fade_object.elements[toHide]).slideUp($fade_object.settings.speed);
-			$($fade_object.elements[toShow]).slideDown($fade_object.settings.speed, function() {buildControls();});
-		} else if ($fade_object.settings.animationType == 'slideOver') {
-			var itemWidth = $($fade_object.elements[0]).width(),
-				to_hide_css = {},
-				to_show_css = {},
-				to_hide_animation = {},
-				to_show_animation = {};
+		switch ($fade_object.settings.animationType) {
+			case "slide":
+				$($fade_object.elements[toHide]).slideUp(speed);
+				$($fade_object.elements[toShow]).slideDown(speed, function() {buildControls();});
+				break;
+			case "slideOver":
+				var itemWidth = $($fade_object.elements[0]).width(),
+					to_hide_css = {},
+					to_show_css = {},
+					to_hide_animation = {},
+					to_show_animation = {};
+					
+				$($fade_object.container).css({'overflow': 'hidden'});
 				
-			$($fade_object.container).css({'overflow': 'hidden'});
-			
-			// Both CSS Declarations use the same initial CSS
-			to_hide_css = {
-				'position': 'absolute',
-				'top': '0px'
-			};
-			
-			to_show_css = $.extend({}, to_hide_css);
-			
-			// If going forward, we want the item (to be shown) to animate from the right to left
-			// If going backwards, we want the item (to be shown) to animate from the left to the right
-			if (toShow > toHide) { // Forwards
-				console.log('Forwards!');
-				to_hide_css.left = "0px";
-				to_hide_css.right = "auto";
-
-				to_show_css.left = 'auto';
-				to_show_css.right = '-' + itemWidth + 'px';
-
-				to_hide_animation.left = '-' + itemWidth + 'px';
-
-				to_show_animation.right = '0px';
+				// Both CSS Declarations use the same initial CSS
+				to_hide_css = {
+					'position': 'absolute',
+					'top': '0px'
+				};
 				
-				console.log(to_hide_css);
-			} else { // Backwards
-				console.log("Backwards!");
-				to_hide_css.left = "auto";
-				to_hide_css.right = "0px";
-
-				to_show_css.left = '-' + itemWidth + 'px';
-				to_show_css.right = 'auto';
-
-				to_hide_animation.right = '-' + itemWidth + 'px';
-
-				to_show_animation.left = '0px';
-			};
-			
-			$($fade_object.elements[toHide]).css(to_hide_css);
-			$($fade_object.elements[toShow]).css(to_show_css).show();
-
-			$($fade_object.elements[toHide]).animate(to_hide_animation, $fade_object.settings.speed, $fade_object.settings.easing, function() {
-				$(this).hide();
-			});
-			
-			$($fade_object.elements[toShow]).animate(to_show_animation ,$fade_object.settings.speed, $fade_object.settings.easing, function() {
-				buildControls();
-			});
-		} else {
-			$($fade_object.elements[toHide]).fadeOut($fade_object.settings.speed);
-			$($fade_object.elements[toShow]).fadeIn($fade_object.settings.speed, function() {
-				buildControls();
-			});
+				to_show_css = $.extend({}, to_hide_css);
+				
+				// If going forward, we want the item (to be shown) to animate from the right to left
+				// If going backwards, we want the item (to be shown) to animate from the left to the right
+				if (toShow > toHide) { // Forwards
+					to_hide_css.left = "0px";
+					to_hide_css.right = "auto";
+	
+					to_show_css.left = 'auto';
+					to_show_css.right = '-' + itemWidth + 'px';
+	
+					to_hide_animation.left = '-' + itemWidth + 'px';
+	
+					to_show_animation.right = '0px';
+					
+					console.log(to_hide_css);
+				} else { // Backwards
+					to_hide_css.left = "auto";
+					to_hide_css.right = "0px";
+	
+					to_show_css.left = '-' + itemWidth + 'px';
+					to_show_css.right = 'auto';
+	
+					to_hide_animation.right = '-' + itemWidth + 'px';
+	
+					to_show_animation.left = '0px';
+				};
+				
+				$($fade_object.elements[toHide]).css(to_hide_css);
+				$($fade_object.elements[toShow]).css(to_show_css).show();
+	
+				$($fade_object.elements[toHide]).animate(to_hide_animation, speed, $fade_object.settings.easing, function() {
+					$(this).hide();
+				});
+				
+				$($fade_object.elements[toShow]).animate(to_show_animation ,speed, $fade_object.settings.easing, function() {
+					buildControls();
+				});
+				break;
+			case "fadeEmpty":
+				$($fade_object.elements[toHide]).fadeOut(speed, function () {
+					$($fade_object.elements[toShow]).fadeIn(speed, function() {
+						buildControls();
+					});
+				});
+				break;
+			case "slideEmpty":
+				$($fade_object.elements[toHide]).slideUp(speed, function () {
+					$($fade_object.elements[toShow]).slideDown(speed, function() {buildControls();});
+				});
+				break;
+			default:
+				$($fade_object.elements[toHide]).fadeOut(speed)
+				$($fade_object.elements[toShow]).fadeIn(speed, function() {
+					buildControls();
+				});
+			break;
 		}
+		
 		// Update the toShow item
 		if ($fade_object.settings.currentItemContainer) {
 			$.currentItem($fade_object, toShow);
