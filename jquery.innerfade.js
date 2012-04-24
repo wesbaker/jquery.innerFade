@@ -57,7 +57,9 @@
 			// Start the loop
 			if ($fade_object.elements.length > 1) {
 				// Establish the Next and Previous Handlers
-				$.bindControls($fade_object);
+				if ($fade_object.settings.nextLink || $fade_object.settings.prevLink) { 
+					$.bindControls($fade_object); 
+				}
 
 				// Establish Cancel Handler
 				if ($fade_object.settings.cancelLink) { $.bindCancel($fade_object); };
@@ -152,16 +154,12 @@
 	 * @param {Number} toHide The position in the elements array of the item to be hidden
 	 */
 	$.fadeToItem = function($fade_object, toShow, toHide) {		
-		// Update the next and previous controls
-		var buildControls = function() {
-			if ($fade_object.settings.nextLink || $fade_object.settings.prevLink) { $.bindControls($fade_object); }
-		};
 		var speed = $fade_object.settings.speed;
 		
 		switch ($fade_object.settings.animationType) {
 			case "slide":
 				$($fade_object.elements[toHide]).slideUp(speed);
-				$($fade_object.elements[toShow]).slideDown(speed, function() {buildControls();});
+				$($fade_object.elements[toShow]).slideDown(speed);
 				break;
 			case "slideOver":
 				var itemWidth = $($fade_object.elements[0]).width(),
@@ -213,27 +211,21 @@
 					$(this).hide();
 				});
 				
-				$($fade_object.elements[toShow]).animate(to_show_animation ,speed, $fade_object.settings.easing, function() {
-					buildControls();
-				});
+				$($fade_object.elements[toShow]).animate(to_show_animation ,speed, $fade_object.settings.easing);
 				break;
 			case "fadeEmpty":
 				$($fade_object.elements[toHide]).fadeOut(speed, function () {
-					$($fade_object.elements[toShow]).fadeIn(speed, function() {
-						buildControls();
-					});
+					$($fade_object.elements[toShow]).fadeIn(speed);
 				});
 				break;
 			case "slideEmpty":
 				$($fade_object.elements[toHide]).slideUp(speed, function () {
-					$($fade_object.elements[toShow]).slideDown(speed, function() {buildControls();});
+					$($fade_object.elements[toShow]).slideDown(speed);
 				});
 				break;
 			default:
 				$($fade_object.elements[toHide]).fadeOut(speed)
-				$($fade_object.elements[toShow]).fadeIn(speed, function() {
-					buildControls();
-				});
+				$($fade_object.elements[toShow]).fadeIn(speed);
 			break;
 		}
 		
@@ -312,7 +304,7 @@
 	 * @param {Object} $fade_object The object that contains the settings, elements and container for this slideshow
 	 */
 	$.bindControls = function($fade_object) {
-		$($fade_object.settings.nextLink).unbind().one('click', function(event) {
+		$($fade_object.settings.nextLink).on('click', function(event) {
 			event.preventDefault();
 			$.stopSlideshow($fade_object);
 			
@@ -325,7 +317,7 @@
 			$.fadeToItem($fade_object, nextElementIndex, currentElementIndex);
 		});
 			
-		$($fade_object.settings.prevLink).unbind().one('click', function(event) {
+		$($fade_object.settings.prevLink).on('click', function(event) {
 			event.preventDefault();
 			$.stopSlideshow($fade_object);
 			
