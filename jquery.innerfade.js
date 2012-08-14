@@ -78,21 +78,19 @@
 					$.innerFadeIndex($fade_object);
 				};
 
-				$($fade_object.elements).filter(':gt(0)').hide(0);
-				// Set the z-index from highest to lowest (20, 19, 18...) and set their position as absolute
+				// Set the z-index from highest to lowest (20, 19, 18...), hide everything and set position as absolute
 				for (var i = 0; i < $fade_object.elements.length; i++) {
-					$($fade_object.elements[i]).css('z-index', String($fade_object.elements.length-i)).css('position', 'absolute');
+					$($fade_object.elements[i]).hide(0).css('z-index', String($fade_object.elements.length-i)).css('position', 'absolute');
 				}
 
 				var toShow = '';
 				var toHide = '';
 
 				if ($fade_object.settings.type == "random") {
-					toHide = Math.floor(Math.random() * $fade_object.elements.length);
+					toShow = Math.floor(Math.random() * $fade_object.elements.length);
 					do { 
-						toShow = Math.floor(Math.random() * $fade_object.elements.length);
-					} while (toHide == toShow );				
-					$($fade_object.elements[toHide]).show();
+						toHide = Math.floor(Math.random() * $fade_object.elements.length);
+					} while (toHide == toShow);									
 				} else if ( $fade_object.settings.type == 'random_start' ) {
 					$fade_object.settings.type = 'sequence';
 					toHide = Math.floor ( Math.random () * ( $fade_object.elements.length ) );
@@ -112,11 +110,7 @@
 				};
 				$.updateIndexes($fade_object, toShow);
 
-				if ($fade_object.settings.type == 'random') {
-					$($fade_object.elements[toHide]).show();
-				} else {
-					$($fade_object.elements[toShow]).show();
-				};
+				$($fade_object.elements[toShow]).show();
 
 				// Set item count containers
 				if ($fade_object.settings.currentItemContainer) { $.currentItem($fade_object, toShow); };
