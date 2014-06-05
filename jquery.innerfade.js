@@ -336,7 +336,7 @@
 				$.stopSlideshow($fade_object);
 			} else {
 				// Restart the slideshow
-				var tag = $($fade_object.container).children(':first').attr('tagName').toLowerCase();
+				var tag = $($fade_object.container).children(':first').prop('tagName').toLowerCase();
 				var nextItem = '';
 				var previousItem = '';
 
